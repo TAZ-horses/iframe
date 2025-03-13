@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steed Media Mechanical Horses - FAQ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* General Reset */
+    body {
+      font-family: 'Schibsted Grotesk', Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* FAQ Section */
+    #faq {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #faq h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #222;
+      font-weight: 700;
+    }
+
+    #faq h2 {
+      font-size: 24px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: #444;
+      font-weight: 600;
+    }
+
+    /* FAQ Item */
+    .faq-item {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    /* FAQ Question (Button) */
+    .faq-question {
+      display: block;
+      padding: 15px 20px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #444;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.3s ease;
+    }
+
+    .faq-question::after {
+      content: '+';
+      position: absolute;
+      right: 20px;
+      font-size: 24px;
+      color: #666;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-toggle:checked + .faq-question::after {
+      content: '−';
+      transform: rotate(180deg);
+    }
+
+    .faq-toggle:checked + .faq-question {
+      background-color: #e0e0e0;
+    }
+
+    /* FAQ Answer */
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 20px;
+      transition: max-height 0.5s ease, padding 0.3s ease;
+    }
+
+    .faq-toggle:checked ~ .faq-answer {
+      max-height: 500px;
+      padding: 15px 20px;
+    }
+
+    /* Hide the checkbox */
+    .faq-toggle {
+      display: none;
+    }
+
+    /* Lists */
+    .faq-answer ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+
+    .faq-answer ul li {
+      margin-bottom: 10px;
+    }
+
+    /* Scroll Buttons */
+    .scroll-button {
+      display: none;
+      position: fixed;
+      right: 20px;
+      background-color: #444;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .scroll-button:hover {
+      background-color: #222;
+      transform: scale(1.1);
+    }
+
+    .scroll-button:active {
+      transform: scale(0.9);
+    }
+
+    #scroll-to-top {
+      bottom: 90px;
+    }
+
+    #scroll-to-bottom {
+      bottom: 20px;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      #faq {
+        padding: 10px;
+      }
+
+      .faq-question {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+
+      .faq-answer {
+        padding: 0 15px;
+      }
+
+      .scroll-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+
+      #scroll-to-top {
+        bottom: 70px;
+      }
+
+      #scroll-to-bottom {
+        bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section id="faq">
+    <h1>Frequently Asked Questions</h1>
+
+    <!-- FAQ Item 1 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq1" class="faq-toggle">
+      <label for="faq1" class="faq-question">1. What is Steed Media?</label>
+      <div class="faq-answer">
+        <p>Steed Media is the UK’s leading provider of state-of-the-art mechanical horses for film, TV, and creative productions. Our highly realistic animatronic horses are designed to deliver safe, reliable, and lifelike performances, saving production teams time and eliminating the challenges of working with live animals.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 2 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq2" class="faq-toggle">
+      <label for="faq2" class="faq-question">2. Why choose a mechanical horse over a real horse?</label>
+      <div class="faq-answer">
+        <p>Mechanical horses offer numerous advantages for film and TV productions:</p>
+        <ul>
+          <li><strong>Enhanced Safety:</strong> No risk to actors or crew during stunts or close-contact scenes. Establishing shots and wides can then be done with doubles or stuntmen on real horses.</li>
+          <li><strong>Consistent Motion:</strong> Perfectly repeatable movements for multiple takes.</li>
+          <li><strong>Unmatched Versatility:</strong> Works indoors, outdoors, and on challenging terrain without concerns about fatigue or behaviour.</li>
+          <li><strong>Cost Savings:</strong> Avoid the expense of animal handlers, veterinary care, and transport logistics.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ Item 3 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq3" class="faq-toggle">
+      <label for="faq3" class="faq-question">3. How lifelike are your mechanical horses?</label>
+      <div class="faq-answer">
+        <p>Our mechanical horses are engineered to replicate the appearance, movements, and anatomy of real horses. Key features include:</p>
+        <ul>
+          <li><strong>Realistic Coats:</strong> Customisable, high-quality materials for natural-looking manes, tails, and fur.</li>
+          <li><strong>Accurate Anatomy:</strong> Proportions and muscle definition designed for both close-up and wide shots.</li>
+          <li><strong>Custom Colour Matching:</strong> Horses can be matched to the colour of real horses in your production, with manes and tails designed to blend perfectly for continuity.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Continue adding all FAQ items as needed -->
+
+    <!-- FAQ Item 4 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq4" class="faq-toggle">
+      <label for="faq4" class="faq-question">4. What kind of movements can the mechanical horses perform?</label>
+      <div class="faq-answer">
+        <p>Our mechanical horses are pre-set with cinematic-grade motion sequences, offering versatility for a wide range of scenes. Key movement features include:</p>
+        <ul>
+          <li><strong>Lifelike Gaits:</strong> Walking, trotting, and galloping, with smooth transitions between movements.</li>
+          <li><strong>Head and Neck Dynamics:</strong> Natural bobbing, turning, and tilting for realistic interaction.</li>
+          <li><strong>Stunt Performance:</strong> While the horses do not rear, they are ideal for action-packed stunt scenes, including controlled falls, rigging for wire work, and supporting stunt performers during complex sequences. Save time in complex rigging sequences prep because it can be placed in the exact place and action repeated over and over exactly the same.</li>
+          <li><strong>Silent Operation:</strong> Quiet mechanics ensure no disruption to on-set audio recording.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ Item 5 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq5" class="faq-toggle">
+      <label for="faq5" class="faq-question">5. Are your mechanical horses safe and enjoyable for actors of all ages?</label>
+      <div class="faq-answer">
+        <p>Yes! Our mechanical horses are designed to be safe and enjoyable for both children and adults. Key features include:</p>
+        <ul>
+          <li><strong>Sturdy Mounts:</strong> Are built for maximum stability, ensuring a secure experience for riders of all ages. The horses are mounted on the front with an airbag which assists in getting heads in the correct position for the camera and comfort for the rider.</li>
+          <li><strong>Smooth, Gentle Motion:</strong> The horses’ movements are predictable and comfortable, making them ideal for actors performing long or complex scenes.</li>
+          <li><strong>Custom Protective Options:</strong> Additional padding, harnesses, and other safety features are available to meet specific needs.</li>
+          <li><strong>Exciting and Realistic Design:</strong> Children and adults alike enjoy working with our lifelike horses, which help them stay immersed in their roles and deliver authentic performances.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Continue adding FAQ items as needed -->
+
+    <h2><strong>Production Support</strong></h2>
+
+    <!-- FAQ Item 6 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq6" class="faq-toggle">
+      <label for="faq6" class="faq-question">6. Do you provide on-set technical support?</label>
+      <div class="faq-answer">
+        <p>Yes, every hire includes a team of experienced technicians to manage setup, operation, and troubleshooting, ensuring your production runs smoothly.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 7 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq7" class="faq-toggle">
+      <label for="faq7" class="faq-question">7. Are the mechanical horses weatherproof?</label>
+      <div class="faq-answer">
+        <p>Yes, our mechanical horses are designed to perform in a variety of conditions, including rain and snow. For extreme environments, we offer additional protective features.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 8 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq8" class="faq-toggle">
+      <label for="faq8" class="faq-question">8. Can the mechanical horses be used with CGI?</label>
+      <div class="faq-answer">
+        <p>Absolutely. Our designs are optimised for seamless CGI integration, enabling post-production teams to enhance realism or add effects without difficulty.</p>
+      </div>
+    </div>
+
+    <!-- Continue adding FAQ items as needed -->
+
+    <h2><strong>Logistics and Delivery</strong></h2>
+
+    <!-- FAQ Item 9 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq9" class="faq-toggle">
+      <label for="faq9" class="faq-question">9. How is the mechanical horse delivered and mounted?</label>
+      <div class="faq-answer">
+        <p>Our mechanical horses are transported using a 4x4 Land Cruiser and a large trailer. Each delivery includes:</p>
+        <ul>
+          <li>A petrol-powered Can-am All-terrain vehicle.</li>
+          <li>Up to 6 mechanical horses and 1 rehearsal horse delivered per trip, depending on your production’s needs.</li>
+          <li>A dedicated technician and driver to ensure safe delivery, installation, and setup.</li>
+        </ul>
+        <p>The horses themselves do not require electricity and are designed for simple, efficient operation. The quad-mounted system allows the horse to be repositioned to the left, right, or centre for dynamic camera angles. There are seats for crew front and back which are interchangeable, facing forward and backwards. Additionally, horses can be mounted on larger vehicles or stationary rigs for controlled or dynamic filming.</p>
+        <p>The trailer includes a workshop for on-site adjustments or maintenance, which requires either mains electricity or battery power for operation, ensuring flexibility at any filming location. The workshop also stores the Can-am and horses when not in use.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 10 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq10" class="faq-toggle">
+      <label for="faq10" class="faq-question">10. Do you ship internationally?</label>
+      <div class="faq-answer">
+        <p>Yes, we provide international shipping and logistical support. Additional fees for customs and transport may apply.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 11 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq11" class="faq-toggle">
+      <label for="faq11" class="faq-question">11. What are the power requirements?</label>
+      <div class="faq-answer">
+        <p>The horses themselves do not require power. However, the trailer workshop can be powered by standard mains electricity or battery packs if needed for on-site adjustments.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 12 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq12" class="faq-toggle">
+      <label for="faq12" class="faq-question">12. How long does it take to set up the mechanical horse on set?</label>
+      <div class="faq-answer">
+        <p>Setup times vary depending on the scene requirements, but our team ensures a fast and efficient setup process. Most installations take between 30 minutes to a few hours.</p>
+      </div>
+    </div>
+
+    <!-- Continue adding FAQ items as needed -->
+
+    <h2><strong>Safety</strong></h2>
+
+    <!-- FAQ Item 13 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq13" class="faq-toggle">
+      <label for="faq13" class="faq-question">13. Are your mechanical horses safe to use on set?</label>
+      <div class="faq-answer">
+        <p>Yes, safety is a top priority. Our mechanical horses undergo rigorous testing and meet the highest safety standards. We also provide on-site safety briefings for the entire crew. We have up-to-date inspections for rig, risk assessments, and insurance that covers our equipment and people.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 14 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq14" class="faq-toggle">
+      <label for="faq14" class="faq-question">14. What happens if the mechanical horse malfunctions?</label>
+      <div class="faq-answer">
+        <p>In the rare event of a malfunction, our on-set technicians are trained to quickly resolve any issues to minimise downtime. Replacement units can also be provided if necessary.</p>
+      </div>
+    </div>
+
+    <!-- Continue adding FAQ items as needed -->
+
+    <h2><strong>Customisation Options</strong></h2>
+
+    <!-- FAQ Item 15 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq15" class="faq-toggle">
+      <label for="faq15" class="faq-question">15. Can the mechanical horses be customised?</label>
+      <div class="faq-answer">
+        <p>Yes, our mechanical horses can be tailored to meet your production’s aesthetic needs. Options include:</p>
+        <ul>
+          <li>Custom coat colours and textures to match actors’ real horses.</li>
+          <li>Manes and tails styled to blend perfectly with the production’s aesthetic.</li>
+          <li>Adaptation for specific props or costumes.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ Item 16 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq16" class="faq-toggle">
+      <label for="faq16" class="faq-question">16. Do you offer bespoke mechanical horses?</label>
+      <div class="faq-answer">
+        <p>For productions requiring unique designs or capabilities, we can create bespoke mechanical horses tailored to your exact specifications. Contact us for a consultation to discuss your vision.</p>
+      </div>
+    </div>
+
+    <!-- Continue adding FAQ items as needed -->
+
+    <h2><strong>Additional Information</strong></h2>
+
+    <!-- FAQ Item 17 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq17" class="faq-toggle">
+      <label for="faq17" class="faq-question">17. Can I see examples of your mechanical horses in action?</label>
+      <div class="faq-answer">
+        <p>Yes! Visit our Gallery section to view behind-the-scenes footage and testimonials from previous productions. For specific examples, please contact us directly.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 18 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq18" class="faq-toggle">
+      <label for="faq18" class="faq-question">18. Do your mechanical horses require special maintenance?</label>
+      <div class="faq-answer">
+        <p>No special maintenance is needed during filming, as our team handles all operational needs. Between rentals, each horse undergoes thorough inspections to ensure perfect performance on set.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 19 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq19" class="faq-toggle">
+      <label for="faq19" class="faq-question">19. What size productions do you cater to?</label>
+      <div class="faq-answer">
+        <p>We cater to productions of all sizes, from indie films and commercials to blockbuster feature films and television series. Our services are scalable to meet the demands of your project.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Item 20 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq20" class="faq-toggle">
+      <label for="faq20" class="faq-question">20. How can I get in touch with Steed Media?</label>
+      <div class="faq-answer">
+        <p>We’d love to help you bring your project to life. Contact us via:</p>
+        <ul>
+          <li><strong>Email:</strong> info@steedmedia.co.uk</li>
+          <li><strong>Phone:</strong> +44 7980474830</li>
+          <li><strong>Website:</strong> www.steedmedia.co.uk</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ Item 21 -->
+    <div class="faq-item">
+      <input type="checkbox" id="faq21" class="faq-toggle">
+      <label for="faq21" class="faq-question">21. Do you offer consultations?</label>
+      <div class="faq-answer">
+        <p>Yes, we offer free consultations to discuss your project and recommend the best solutions for your production.</p>
+      </div>
+    </div>
+
+
+    <!-- Scroll-to-Top Button -->
+    <button id="scroll-to-top" class="scroll-button" title="Go to top">↑</button>
+
+    <!-- Scroll-to-Bottom Button -->
+    <button id="scroll-to-bottom" class="scroll-button" title="Go to bottom">↓</button>
+  </section>
+
+  <script>
+    // JavaScript for Scroll Buttons
+    const scrollToTopButton = document.getElementById('scroll-to-top');
+    const scrollToBottomButton = document.getElementById('scroll-to-bottom');
+
+    window.onscroll = () => {
+      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        scrollToTopButton.style.display = 'block';
+        scrollToBottomButton.style.display = 'block';
+      } else {
+        scrollToTopButton.style.display = 'none';
+        scrollToBottomButton.style.display = 'none';
+      }
+    };
+
+    scrollToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    scrollToBottomButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+</html>
