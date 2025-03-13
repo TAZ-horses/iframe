@@ -16,6 +16,20 @@
       line-height: 1.6;
     }
 
+    /* Instruction banner */
+    .faq-instruction {
+      background-color: #444;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
     /* FAQ Section */
     #faq {
       max-width: 800px;
@@ -39,16 +53,6 @@
       margin-bottom: 15px;
       color: #444;
       font-weight: 600;
-    }
-
-    /* FAQ Item */
-    .faq-item {
-      margin-bottom: 15px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .faq-item:last-child {
-      border-bottom: none;
     }
 
     /* FAQ Question (Button) */
@@ -99,19 +103,9 @@
       display: none;
     }
 
-    /* Lists */
-    .faq-answer ul {
-      padding-left: 20px;
-      margin: 10px 0;
-    }
-
-    .faq-answer ul li {
-      margin-bottom: 10px;
-    }
-
     /* Scroll Buttons */
     .scroll-button {
-      display: none;
+      display: block; /* Always visible */
       position: fixed;
       right: 20px;
       background-color: #444;
@@ -136,7 +130,7 @@
     }
 
     #scroll-to-top {
-      bottom: 90px;
+      bottom: 80px;
     }
 
     #scroll-to-bottom {
@@ -145,42 +139,31 @@
 
     /* Mobile Responsiveness */
     @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-
-      #faq {
-        padding: 10px;
+      .faq-instruction {
+        font-size: 14px;
+        padding: 8px;
       }
 
       .faq-question {
         font-size: 16px;
-        padding: 10px 15px;
-      }
-
-      .faq-answer {
-        padding: 0 15px;
+        padding: 12px 18px;
       }
 
       .scroll-button {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
         font-size: 20px;
-      }
-
-      #scroll-to-top {
-        bottom: 70px;
-      }
-
-      #scroll-to-bottom {
-        bottom: 10px;
       }
     }
   </style>
 </head>
 <body>
+  <div class="faq-instruction">Tap a question to expand the answer.</div>
+  
   <section id="faq">
     <h1>Frequently Asked Questions</h1>
+      <!-- FAQ Items -->
+    [INSERT ALL FAQ ITEMS HERE]
 
     <!-- FAQ Item 1 -->
     <div class="faq-item">
@@ -434,41 +417,24 @@
     </div>
 
 
-    <!-- Scroll-to-Top Button -->
+   <!-- Scroll Buttons -->
     <button id="scroll-to-top" class="scroll-button" title="Go to top">↑</button>
-
-    <!-- Scroll-to-Bottom Button -->
     <button id="scroll-to-bottom" class="scroll-button" title="Go to bottom">↓</button>
   </section>
 
   <script>
-    // JavaScript for Scroll Buttons
-    const scrollToTopButton = document.getElementById('scroll-to-top');
-    const scrollToBottomButton = document.getElementById('scroll-to-bottom');
-
-    window.onscroll = () => {
-      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-        scrollToTopButton.style.display = 'block';
-        scrollToBottomButton.style.display = 'block';
-      } else {
-        scrollToTopButton.style.display = 'none';
-        scrollToBottomButton.style.display = 'none';
-      }
-    };
-
-    scrollToTopButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+    // Scroll Button Functionality
+    document.getElementById('scroll-to-top').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    scrollToBottomButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-      });
+    document.getElementById('scroll-to-bottom').addEventListener('click', () => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     });
   </script>
+</body>
+</html>
+
+      
 </body>
 </html>
