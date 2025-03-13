@@ -6,6 +6,7 @@
 	<title>Film Reel with Lightbox</title>
 	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 	<style>
+		/* General Styles */
 		body {
 			margin: 0;
 			padding: 0;
@@ -17,8 +18,33 @@
 			align-items: center;
 			height: 100vh;
 			font-family: 'Cinzel', serif;
+			position: relative;
 		}
 
+		body::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: url('https://www.transparenttextures.com/patterns/asfalt-light.png') repeat;
+			background-size: cover;
+			opacity: 0.2;
+			z-index: -1;
+			animation: parallax 20s linear infinite;
+		}
+
+		@keyframes parallax {
+			0% {
+				background-position: 0 0;
+			}
+			100% {
+				background-position: 100% 100%;
+			}
+		}
+
+		/* Container Styles */
 		.container {
 			width: 100%;
 			max-width: 1200px;
@@ -31,11 +57,38 @@
 			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
 		}
 
+		.container::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+			pointer-events: none;
+		}
+
+		/* Cinematic Title */
+		.cinematic-title {
+			position: absolute;
+			top: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 3rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 4px;
+			color: rgba(255, 200, 150, 0.8);
+			text-shadow: 0 0 10px rgba(255, 200, 150, 0.8), 0 0 20px rgba(255, 200, 150, 0.6);
+			z-index: 10;
+		}
+
+		/* Reel Styles */
 		.reel {
 			display: flex;
-			width: calc(100% * 26); /* Double the width to accommodate duplicated content */
+			width: calc(100% * 26); /* Double the width for seamless looping */
 			height: 100%;
-			animation: scroll 90s linear infinite; /* Slowed down */
+			animation: scroll 60s linear infinite;
 		}
 
 		.reel figure {
@@ -47,6 +100,24 @@
 			justify-content: center;
 		}
 
+		.reel figure::before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 150%;
+			height: 150%;
+			background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
+			transform: translate(-50%, -50%);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+			pointer-events: none;
+		}
+
+		.reel figure:hover::before {
+			opacity: 1;
+		}
+
 		.reel img {
 			width: auto;
 			height: 100%;
@@ -55,14 +126,16 @@
 			background: black;
 			padding: 5px;
 			cursor: pointer;
-			transition: transform 0.3s ease;
+			transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
 			border-radius: 8px;
 			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+			border: 2px solid transparent;
 		}
 
 		.reel img:hover {
 			transform: scale(1.1);
 			box-shadow: 0 0 15px rgba(255, 200, 150, 0.8);
+			border: 2px solid rgba(255, 200, 150, 0.8);
 		}
 
 		.reel figcaption {
@@ -84,10 +157,11 @@
 				transform: translateX(0);
 			}
 			100% {
-				transform: translateX(-50%); /* Translate by half the width */
+				transform: translateX(-50%);
 			}
 		}
 
+		/* Lightbox Styles */
 		.lightbox {
 			position: fixed;
 			top: 0;
@@ -116,10 +190,42 @@
 			opacity: 1;
 			visibility: visible;
 		}
+
+		/* Loading Animation */
+		.loading-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.9);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+		}
+
+		.spinner {
+			border: 4px solid rgba(255, 255, 255, 0.3);
+			border-top: 4px solid rgba(255, 200, 150, 0.8);
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
 	</style>
 </head>
 <body>
+	<div class="loading-overlay">
+		<div class="spinner"></div>
+	</div>
 	<div class="container">
+		<h1 class="cinematic-title">The Film Reel</h1>
 		<div class="reel">
 			<!-- First Set of Images -->
 			<figure>
@@ -258,6 +364,12 @@
 			if (e.key === 'Escape' && lightbox.classList.contains('active')) {
 				lightbox.classList.remove('active');
 			}
+		});
+
+		// Hide loading overlay when page is fully loaded
+		window.addEventListener('load', () => {
+			const loadingOverlay = document.querySelector('.loading-overlay');
+			loadingOverlay.style.display = 'none';
 		});
 	</script>
 </body>
