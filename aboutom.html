@@ -68,20 +68,37 @@
 			pointer-events: none;
 		}
 
-		/* Cinematic Title */
 		.cinematic-title {
-			position: absolute;
-			top: 20px;
-			left: 50%;
-			transform: translateX(-50%);
-			font-size: 3rem;
-			font-weight: 700;
-			text-transform: uppercase;
-			letter-spacing: 4px;
-			color: rgba(255, 200, 150, 0.8);
-			text-shadow: 0 0 10px rgba(255, 200, 150, 0.8), 0 0 20px rgba(255, 200, 150, 0.6);
-			z-index: 10;
-		}
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 4vw; /* Responsive scaling */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: rgba(255, 200, 150, 0.9);
+    text-shadow: 
+        0 0 15px rgba(255, 200, 150, 1),
+        0 0 30px rgba(255, 150, 100, 0.8),
+        0 0 45px rgba(255, 100, 50, 0.6);
+    z-index: 10;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Fine-tune the font size for smaller screens */
+@media (max-width: 768px) {
+    .cinematic-title {
+        font-size: 3.5vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .cinematic-title {
+        font-size: 3vw;
+    }
+}
 
 		/* Reel Styles */
 		.reel {
