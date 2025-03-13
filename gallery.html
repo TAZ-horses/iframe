@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <style>
+        /* Full-page gallery container */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: black; font-family: Arial, sans-serif; }
+
+        .fullpage-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            padding: 10px;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .gallery-item {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+            border-radius: 8px;
+        }
+
+        /* Hover Effect */
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Fullscreen Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="fullpage-gallery">
+    <div class="gallery-item" onclick="openLightbox('https://live.staticflickr.com/65535/54282131377_448449fc4e_o.jpg')">
+        <img src="https://live.staticflickr.com/65535/54282131377_448449fc4e_o.jpg" alt="Image 1">
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://live.staticflickr.com/65535/54282131378_123456789_o.jpg')">
+        <img src="https://live.staticflickr.com/65535/54282131378_123456789_o.jpg" alt="Image 2">
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://live.staticflickr.com/65535/54282131379_abcdef123_o.jpg')">
+        <img src="https://live.staticflickr.com/65535/54282131379_abcdef123_o.jpg" alt="Image 3">
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://live.staticflickr.com/65535/54282131380_ghijklmno_o.jpg')">
+        <img src="https://live.staticflickr.com/65535/54282131380_ghijklmno_o.jpg" alt="Image 4">
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://live.staticflickr.com/65535/54282131381_pqrstuvw_o.jpg')">
+        <img src="https://live.staticflickr.com/65535/54282131381_pqrstuvw_o.jpg" alt="Image 5">
+    </div>
+</div>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-img" src="">
+</div>
+
+<script>
+    function openLightbox(imageSrc) {
+        document.getElementById('lightbox-img').src = imageSrc;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
