@@ -152,10 +152,11 @@ function addService() {
   const cats = Object.keys(data);
   if (!cats.length) return alert("Add a category first.");
   const service = prompt("Service name:");
-const cat = prompt("Under which category?
-" + cats.join(", "));\n" + cats.join(", "));  if (!service || !data[cat]) return;
-  data[cat].push(service); saveAll(); location.reload();
-}
+const cat = prompt("Under which category?\n" + cats.join(", "));
+if (!service || !data[cat]) return;
+data[cat].push(service);
+saveAll();
+location.reload();}
 function init() {
   Object.entries(data).forEach(([cat, services]) => {
     const catNode = createNode(cat, true);
