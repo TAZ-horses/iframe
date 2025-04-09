@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Steed Media Mindmap</title>
+    <meta charset="UTF-8" />
+    <style>
+        body { font-family: Arial; background: #f0f0f0; padding: 20px; }
+        .node { background: white; padding: 10px; margin: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .category { font-size: 20px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Steed Media Mindmap</h1>
+    <div id="mindmap"></div>
+
+    <script>
+        fetch('mindmap_data.json')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('mindmap');
+                Object.keys(data).forEach(category => {
+                    const catDiv = document.createElement('div');
+                    catDiv.className = 'category';
+                    catDiv.textContent = category;
+                    container.appendChild(catDiv);
+
+                    data[category].forEach(service => {
+                        const node = document.createElement('div');
+                        node.className = 'node';
+                        node.innerHTML = `<strong>${service.service}</strong><br>
+                            Username: ${service.username}<br>
+                            Password: ${service.password}`;
+                        container.appendChild(node);
+                    });
+                });
+            })
+            .catch(err => {
+                document.getElementById('mindmap').textContent = 'Error loading mindmap.';
+                console.error(err);
+            });
+    </script>
+</body>
+</html>

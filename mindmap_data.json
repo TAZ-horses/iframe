@@ -1,0 +1,16 @@
+{
+  "Hosting": [
+    {
+      "service": "Dreamhost",
+      "username": "admin@dreamhost.com",
+      "password": "yourpassword"
+    }
+  ],
+  "Social Media": [
+    {
+      "service": "Instagram",
+      "username": "steedmedia",
+      "password": "instapass"
+    }
+  ]
+}
