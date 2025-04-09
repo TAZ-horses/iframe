@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           persist-credentials: false
@@ -36,8 +36,13 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add mindmap_data_synced.json || echo "No file to add"
-          git diff --cached --quiet && echo "No changes to commit" || (
-            git commit -m "Sync from Notion" &&
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
-          )
+
+          if [ -f mindmap_data_synced.json ]; then
+            git add mindmap_data_synced.json
+            git diff --cached --quiet && echo "No changes to commit" || (
+              git commit -m "Sync from Notion" &&
+              git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+            )
+          else
+            echo "mindmap_data_synced.json not found, skipping commit."
+          fi
