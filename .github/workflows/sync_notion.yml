@@ -4,17 +4,19 @@ on:
   push:
     paths:
       - ".github/workflows/sync_notion.yml"
+      - "sync_notation_to_json.py"
   schedule:
-    - cron: "0 * * * *"  # Runs every hour
+    - cron: "0 * * * *"  # Every hour
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          persist-credentials: false  # avoids git auth issues
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -22,7 +24,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install dependencies
-        run: pip install notion-client python-dotenv requests
+        run: pip install notion-client python-dotenv
 
       - name: Run sync script
         env:
@@ -34,4 +36,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add mindmap_data_synced.json
-          git diff --quiet && echo "No changes to commit" || (git commit -m "Sync from Notion" && git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main)
+          git diff --quiet || (
+            git commit -m "Sync from Notion" && \
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+          )
