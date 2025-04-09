@@ -31,11 +31,24 @@ def parse_notion_data(pages):
     structured = {}
     for page in pages:
         props = page["properties"]
-        category = props["Category"]["select"]["name"] if props["Category"]["select"] else "Uncategorized"
-        service = props["Service"]["title"][0]["plain_text"] if props["Service"]["title"] else "Unknown"
-        username = props["Username"]["rich_text"][0]["plain_text"] if props["Username"]["rich_text"] else ""
-        password = props["Password"]["rich_text"][0]["plain_text"] if props["Password"]["rich_text"] else ""
-        description = props["Notes"]["rich_text"][0]["plain_text"] if props["Notes"]["rich_text"] else ""
+        category_prop = props.get("Category", {})
+        service_prop = props.get("Service", {})
+        username_prop = props.get("Username", {})
+        password_prop = props.get("Password", {})
+        notes_prop = props.get("Notes", {})
+
+        category = (
+            category_prop.get("select", {}).get("name") or
+            category_prop.get("rich_text", [{}])[0].get("plain_text") or
+            "Uncategorized"
+        )
+        service = (
+            service_prop.get("title", [{}])[0].get("plain_text") or
+            "Unknown"
+        )
+        username = username_prop.get("rich_text", [{}])[0].get("plain_text", "")
+        password = password_prop.get("rich_text", [{}])[0].get("plain_text", "")
+        description = notes_prop.get("rich_text", [{}])[0].get("plain_text", "")
 
         structured.setdefault(category, []).append({
             "service": service,
