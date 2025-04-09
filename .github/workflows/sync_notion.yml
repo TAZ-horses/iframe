@@ -33,5 +33,5 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add mindmap_data.json
+          git add mindmap_data_synced.json
           git diff --quiet && echo "No changes to commit" || (git commit -m "Sync from Notion" && git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main)
