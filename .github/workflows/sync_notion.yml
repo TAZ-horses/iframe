@@ -2,47 +2,47 @@ name: Sync Notion to JSON
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Every hour
-  workflow_dispatch:     # Allow manual triggering
-  push:
-    paths:
-      - ".github/workflows/sync_notion.yml"
-      - "sync_notation_to_json.py"
+    - cron: "0 * * * *"  # Every hour at minute 0
+  workflow_dispatch:     # Manual trigger
+
+env:
+  PYTHON_VERSION: "3.10"
+  REQUIREMENTS_FILE: "requirements.txt"
 
 jobs:
-  build:
+  sync-notion:
+    name: Sync Notion Data
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for committing changes
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          fetch-depth: 0
 
-      - name: Set up Python
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        run: pip install notion-client python-dotenv
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ${{ env.REQUIREMENTS_FILE }}
 
       - name: Run sync script
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-        run: python sync_notation_to_json.py
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python sync_notion_to_json.py
 
       - name: Commit and push changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          if [ -f mindmap_data_synced.json ]; then
-            git add mindmap_data_synced.json
-            git diff --cached --quiet && echo "No changes to commit" || (
-              git commit -m "Sync from Notion" &&
-              git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
-            )
-          else
-            echo "mindmap_data_synced.json not found, skipping commit."
-          fi
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: "GitHub Actions"
+          author_email: "actions@github.com"
+          message: "chore: Auto-update mindmap data from Notion"
+          add: "mindmap_data_synced.json"
+          pull_strategy: rebase
