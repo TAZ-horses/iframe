@@ -3,18 +3,21 @@ name: Sync Notion to JSON
 on:
   schedule:
     - cron: "0 * * * *"  # Every hour at minute 0
-  workflow_dispatch:     # Manual trigger
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/sync_notion.yml"
+      - "sync_notion_to_json.py"
 
 env:
   PYTHON_VERSION: "3.10"
-  REQUIREMENTS_FILE: "requirements.txt"
 
 jobs:
   sync-notion:
-    name: Sync Notion Data
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for committing changes
+      contents: write  # Critical for push access
+      actions: write
 
     steps:
       - name: Checkout repository
@@ -30,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ${{ env.REQUIREMENTS_FILE }}
+          pip install -r requirements.txt
 
       - name: Run sync script
         env:
@@ -41,8 +44,7 @@ jobs:
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
-          author_name: "GitHub Actions"
-          author_email: "actions@github.com"
-          message: "chore: Auto-update mindmap data from Notion"
-          add: "mindmap_data_synced.json"
+          default_author: github_actions
+          message: "chore: Auto-sync from Notion"
+          add: mindmap_data_synced.json
           pull_strategy: rebase
