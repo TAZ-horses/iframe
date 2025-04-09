@@ -1,8 +1,8 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Steed Media Mindmap</title>
+  <title>Steed Media Mindmap - Radial View</title>
   <style>
     html, body {
       margin: 0;
@@ -10,27 +10,28 @@
       height: 100%;
       background: #2D3047;
       font-family: sans-serif;
-      color: white;
+      overflow: hidden;
     }
-    #container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
+
     .bubble {
       position: absolute;
       padding: 10px 16px;
-      border-radius: 50%;
-      background: #4ECDC4;
+      border-radius: 20px;
+      background: #f8e71c;
       color: #000;
-      text-align: center;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      cursor: move;
+      text-align: center;
       white-space: nowrap;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
       z-index: 2;
+      min-width: 120px;
     }
+
+    .category {
+      background: #FF6B6B !important;
+    }
+
     svg#line-layer {
       position: absolute;
       top: 0;
@@ -39,9 +40,17 @@
       width: 100%;
       height: 100%;
     }
+
     .line {
       stroke: #aaa;
       stroke-width: 2;
+    }
+
+    small {
+      font-weight: normal;
+      font-size: 11px;
+      display: block;
+      color: #333;
     }
   </style>
 </head>
@@ -57,42 +66,58 @@
       const container = document.getElementById("container");
       const svg = document.getElementById("line-layer");
 
-      let yOffset = 60;
-      let xOffset = 60;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const categoryRadius = 200;
+      const serviceRadius = 120;
 
-      Object.entries(data).forEach(([category, entries]) => {
-        const categoryNode = document.createElement("div");
-        categoryNode.className = "bubble";
-        categoryNode.style.background = "#FF6B6B";
-        categoryNode.style.left = `${xOffset}px`;
-        categoryNode.style.top = `${yOffset}px`;
-        categoryNode.textContent = category;
-        container.appendChild(categoryNode);
+      const categories = Object.entries(data);
+      const angleStep = (2 * Math.PI) / categories.length;
 
-        let cx = xOffset + 220;
-        let cy = yOffset;
+      categories.forEach(([category, entries], i) => {
+        const angle = i * angleStep;
+        const catX = centerX + categoryRadius * Math.cos(angle);
+        const catY = centerY + categoryRadius * Math.sin(angle);
 
-        entries.forEach(entry => {
-          const entryNode = document.createElement("div");
-          entryNode.className = "bubble";
-          entryNode.style.background = "#f8e71c";
-          entryNode.style.left = `${cx}px`;
-          entryNode.style.top = `${cy}px`;
-          entryNode.innerHTML = `<strong>${entry.service}</strong><br>${entry.username || ""}`;
-          container.appendChild(entryNode);
+        // Category node
+        const catNode = document.createElement("div");
+        catNode.className = "bubble category";
+        catNode.style.left = `${catX}px`;
+        catNode.style.top = `${catY}px`;
+        catNode.textContent = category;
+        container.appendChild(catNode);
+
+        // Line from center to category
+        const lineToCat = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        lineToCat.setAttribute("x1", centerX);
+        lineToCat.setAttribute("y1", centerY);
+        lineToCat.setAttribute("x2", catX + 40);
+        lineToCat.setAttribute("y2", catY + 20);
+        lineToCat.classList.add("line");
+        svg.appendChild(lineToCat);
+
+        // Place services around the category
+        const subAngleStep = (Math.PI / 4);
+        entries.forEach((entry, j) => {
+          const subAngle = angle + (j - entries.length / 2) * subAngleStep;
+          const svcX = catX + serviceRadius * Math.cos(subAngle);
+          const svcY = catY + serviceRadius * Math.sin(subAngle);
+
+          const svcNode = document.createElement("div");
+          svcNode.className = "bubble";
+          svcNode.style.left = `${svcX}px`;
+          svcNode.style.top = `${svcY}px`;
+          svcNode.innerHTML = `<strong>${entry.service}</strong><br>${entry.username || ""}<small>${entry.description || ""}</small>`;
+          container.appendChild(svcNode);
 
           const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          line.setAttribute("x1", xOffset + 70);
-          line.setAttribute("y1", yOffset + 25);
-          line.setAttribute("x2", cx);
-          line.setAttribute("y2", cy + 25);
+          line.setAttribute("x1", catX + 40);
+          line.setAttribute("y1", catY + 20);
+          line.setAttribute("x2", svcX + 30);
+          line.setAttribute("y2", svcY + 20);
           line.classList.add("line");
           svg.appendChild(line);
-
-          cy += 100;
         });
-
-        yOffset += Math.max(150, entries.length * 100);
       });
     });
 </script>
