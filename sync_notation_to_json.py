@@ -2,95 +2,93 @@ from notion_client import Client
 import os
 import json
 from dotenv import load_dotenv
+import logging
 
-load_dotenv()
-notion_token = os.getenv("NOTION_TOKEN")
-database_id = "1d0cc957949480e180dcfeb4cd5eea19"
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-notion = Client(auth=notion_token)
+def get_property_value(prop, prop_type='text'):
+    """Safely extract property values from Notion API response."""
+    try:
+        if prop_type == 'text':
+            return prop['rich_text'][0]['plain_text'] if prop.get('rich_text') else ''
+        elif prop_type == 'title':
+            return prop['title'][0]['plain_text'] if prop.get('title') else ''
+        elif prop_type == 'select':
+            return prop['select']['name'] if prop.get('select') else 'Uncategorized'
+        return ''
+    except (KeyError, IndexError, TypeError) as e:
+        logger.warning(f"Error parsing property: {str(e)}")
+        return ''
 
-def fetch_notion_database(database_id):
+def fetch_notion_database(database_id, notion):
+    """Fetch all pages from a Notion database with pagination."""
     results = []
     next_cursor = None
-    while True:
-        response = notion.databases.query(
-            **({
-                "database_id": database_id,
-                "start_cursor": next_cursor
-            } if next_cursor else {
-                "database_id": database_id
-            })
-        )
-        results.extend(response["results"])
-        if not response.get("has_more"):
-            break
-        next_cursor = response.get("next_cursor")
-    return results
+    
+    try:
+        while True:
+            query_params = {"database_id": database_id}
+            if next_cursor:
+                query_params["start_cursor"] = next_cursor
+
+            response = notion.databases.query(**query_params)
+            results.extend(response.get('results', []))
+            
+            if not response.get('has_more'):
+                break
+            next_cursor = response.get('next_cursor')
+            
+        logger.info(f"Fetched {len(results)} pages from Notion")
+        return results
+    except Exception as e:
+        logger.error(f"Failed to fetch database: {str(e)}")
+        raise
 
 def parse_notion_data(pages):
+    """Transform Notion API response into structured data."""
     structured = {}
+    
     for page in pages:
-        props = page["properties"]
-        
-        # Use either lowercase or uppercase property names.
-        # Adjust these keys if your Notion database column names differ.
-        category_prop = props.get("category", {}) or props.get("Category", {})
-        desc_prop     = props.get("description", {}) or props.get("Description", {})
-        service_prop  = props.get("service", {}) or props.get("Service", {})
-        username_prop = props.get("username", {}) or props.get("Username", {})
-        notes_prop    = props.get("notes", {}) or props.get("Notes", {})
-        password_prop = props.get("password", {}) or props.get("Password", {})
-
-        # ---------- Category (Safe Fallback) -----------
-        category = "Uncategorized"
-        if "select" in category_prop and category_prop["select"]:
-            category = category_prop["select"].get("name", "Uncategorized")
-        elif "rich_text" in category_prop and len(category_prop["rich_text"]) > 0:
-            category = category_prop["rich_text"][0].get("plain_text", "Uncategorized")
-        elif "title" in category_prop and len(category_prop["title"]) > 0:
-            category = category_prop["title"][0].get("plain_text", "Uncategorized")
-
-        # ---------- Service (Safe Fallback) -----------
-        service = "Unknown"
-        if "title" in service_prop and len(service_prop["title"]) > 0:
-            service = service_prop["title"][0].get("plain_text", "Unknown")
-        elif "rich_text" in service_prop and len(service_prop["rich_text"]) > 0:
-            service = service_prop["rich_text"][0].get("plain_text", "Unknown")
-
-        # ---------- Username (Safe Fallback) -----------
-        username = ""
-        if "rich_text" in username_prop and len(username_prop["rich_text"]) > 0:
-            username = username_prop["rich_text"][0].get("plain_text", "")
-
-        # ---------- Notes (Safe Fallback) -----------
-        notes = ""
-        if "rich_text" in notes_prop and len(notes_prop["rich_text"]) > 0:
-            notes = notes_prop["rich_text"][0].get("plain_text", "")
-
-        # ---------- Password (Safe Fallback) -----------
-        password = ""
-        if "rich_text" in password_prop and len(password_prop["rich_text"]) > 0:
-            password = password_prop["rich_text"][0].get("plain_text", "")
-
-        # ---------- Description (Safe Fallback) -----------
-        description = ""
-        if "rich_text" in desc_prop and len(desc_prop["rich_text"]) > 0:
-            description = desc_prop["rich_text"][0].get("plain_text", "")
-
-        # Build the entry with keys in the desired order:
-        entry = {
-            "description": description,
-            "service": service,
-            "username": username,
-            "notes": notes,
-            "password": password
-        }
-
-        structured.setdefault(category, []).append(entry)
+        try:
+            props = page.get('properties', {})
+            entry = {
+                "description": get_property_value(props.get('Description', {}), 'text'),
+                "service": get_property_value(props.get('Service', {}), 'title'),
+                "username": get_property_value(props.get('Username', {}), 'text'),
+                "notes": get_property_value(props.get('Notes', {}), 'text'),
+                "password": get_property_value(props.get('Password', {}), 'text')
+            }
+            category = get_property_value(props.get('Category', {}), 'select')
+            structured.setdefault(category, []).append(entry)
+        except Exception as e:
+            logger.error(f"Error parsing page {page.get('id')}: {str(e)}")
+            continue
+            
     return structured
 
-pages = fetch_notion_database(database_id)
-structured_data = parse_notion_data(pages)
+def main():
+    """Main execution flow."""
+    load_dotenv()
+    
+    try:
+        notion = Client(auth=os.getenv("NOTION_TOKEN"))
+        database_id = os.getenv("NOTION_DATABASE_ID", "1d0cc957949480e180dcfeb4cd5eea19")
+        
+        pages = fetch_notion_database(database_id, notion)
+        structured_data = parse_notion_data(pages)
+        
+        with open("mindmap_data_synced.json", "w") as f:
+            json.dump(structured_data, f, indent=2)
+            logger.info("Successfully wrote data to mindmap_data_synced.json")
+            
+    except Exception as e:
+        logger.error(f"Critical error in main execution: {str(e)}")
+        raise SystemExit(1)
 
-with open("mindmap_data_synced.json", "w") as f:
-    json.dump(structured_data, f, indent=2)
+if __name__ == "__main__":
+    main()
