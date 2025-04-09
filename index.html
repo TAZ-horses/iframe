@@ -3,60 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>Steed Media Mindmap</title>
-  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Instrument+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@700&family=Instrument+Sans&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       padding: 2rem;
       font-family: 'Instrument Sans', sans-serif;
-      background-color: #2f3b2d;
-      color: white;
+      background: #f2f2f2;
+      color: #111;
     }
 
     h1 {
       font-family: 'Schibsted Grotesk', sans-serif;
       color: #ee0505;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     .category {
-      background-color: #2a423f;
-      border: none;
+      background: #2a423f;
       color: white;
       padding: 1rem;
-      width: 100%;
-      text-align: left;
-      font-size: 1.2rem;
       font-weight: bold;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      border-radius: 0;
+      font-size: 1.2rem;
+      margin-top: 1rem;
     }
 
-    .category:hover {
-      background-color: #344e3f;
-    }
-
-    .services {
-      display: none;
-      padding-left: 1.5rem;
-      background-color: #1e2a23;
-      margin-bottom: 0.5rem;
-    }
-
-    .service-item {
-      margin: 1rem 0;
+    .service-button {
       background: #f8e71c;
       color: #000;
-      padding: 0.8rem;
-      border-radius: 0;
       font-weight: bold;
+      padding: 1rem;
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-size: 1rem;
+      border-bottom: 3px solid #2a423f;
     }
 
-    .service-description {
-      font-family: 'Instrument Sans', sans-serif;
-      font-size: 0.9rem;
-      margin-top: 0.2rem;
-      color: #111;
+    .service-desc {
+      display: none;
+      padding: 1rem;
+      background: #fff7ae;
+      border-left: 4px solid #2a423f;
+      font-size: 0.95rem;
+    }
+
+    .wrapper {
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
@@ -71,31 +66,30 @@
         const container = document.getElementById("mindmap");
 
         Object.entries(data).forEach(([category, services]) => {
-          const btn = document.createElement("button");
-          btn.className = "category";
-          btn.textContent = category;
-          container.appendChild(btn);
-
-          const panel = document.createElement("div");
-          panel.className = "services";
+          const catTitle = document.createElement("div");
+          catTitle.className = "category";
+          catTitle.textContent = category;
+          container.appendChild(catTitle);
 
           services.forEach(service => {
-            const item = document.createElement("div");
-            item.className = "service-item";
-            item.innerHTML = `
-              ${service.service}<br/>
-              <span class="service-description">
-                ${service.username || ""}<br/>
-                ${service.description || ""}
-              </span>
-            `;
-            panel.appendChild(item);
-          });
+            const wrapper = document.createElement("div");
+            wrapper.className = "wrapper";
 
-          container.appendChild(panel);
+            const btn = document.createElement("button");
+            btn.className = "service-button";
+            btn.innerHTML = `${service.service}<br><small>${service.username || ""}</small>`;
 
-          btn.addEventListener("click", () => {
-            panel.style.display = panel.style.display === "block" ? "none" : "block";
+            const desc = document.createElement("div");
+            desc.className = "service-desc";
+            desc.innerHTML = service.description || "(No description provided)";
+
+            btn.addEventListener("click", () => {
+              desc.style.display = desc.style.display === "block" ? "none" : "block";
+            });
+
+            wrapper.appendChild(btn);
+            wrapper.appendChild(desc);
+            container.appendChild(wrapper);
           });
         });
       });
