@@ -1,90 +1,137 @@
  <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Steed Media Mindmap</title>
   <style>
     body {
-      font-family: 'Instrument Sans', sans-serif;
-      background: #2f3b2d;
-      color: white;
       margin: 0;
-      padding: 2rem;
+      padding: 20px;
+      font-family: 'Schibsted Grotesk', 'Instrument Sans', sans-serif;
+      background-color: #f4f1f1;
+      color: #2a423f;
     }
+
     h1 {
-      font-family: 'Schibsted Grotesk', sans-serif;
       color: #ee0505;
     }
-    .category {
-      margin-bottom: 1rem;
-    }
-    .category-header {
-      background-color: #2a423f;
-      padding: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 18px;
-      border: none;
+
+    #searchBar {
+      margin-bottom: 20px;
       width: 100%;
-      text-align: left;
+      max-width: 500px;
+      padding: 10px;
+      font-size: 16px;
     }
-    .entries {
-      display: none;
-      margin: 0;
-      padding: 0;
+
+    .category {
+      background: #2a423f;
+      color: #fff;
+      padding: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
     }
-    .entry {
-      background-color: #f8e71c;
-      color: black;
+
+    .service-entry {
+      background: #ffe031;
       padding: 10px;
       margin: 5px 0;
-      border-left: 8px solid #2a423f;
+      border-left: 5px solid #2f3b2d;
     }
-    .entry strong {
-      font-family: 'Schibsted Grotesk', sans-serif;
+
+    .description {
+      background: #fff8c6;
+      font-style: italic;
+      padding: 5px 10px;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .credentials {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .credentials span {
+      font-weight: bold;
+    }
+
+    .copy-btn {
+      background: #2f3b2d;
+      color: #fff;
+      padding: 3px 6px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #ee0505;
+    }
+
+    input[type="password"] {
+      font-family: monospace;
     }
   </style>
 </head>
 <body>
-  <h1>Steed Media Mindmap</h1>
-  <div id="mindmap-container"></div>
 
-  <script>
-    fetch("mindmap_data_synced.json")
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById("mindmap-container");
-        Object.entries(data).forEach(([category, entries]) => {
-          const section = document.createElement("div");
-          section.className = "category";
+<h1>Steed Media Mindmap</h1>
+<input type="text" id="searchBar" placeholder="Search services...">
 
-          const button = document.createElement("button");
-          button.className = "category-header";
-          button.textContent = category;
-          button.onclick = () => {
-            const list = button.nextElementSibling;
-            list.style.display = list.style.display === "block" ? "none" : "block";
-          };
+<div id="mindmapContainer"></div>
 
-          const list = document.createElement("div");
-          list.className = "entries";
+<script>
+fetch('mindmap_data_synced.json')
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById('mindmapContainer');
 
-          entries.forEach(entry => {
-            const div = document.createElement("div");
-            div.className = "entry";
-            div.innerHTML = `
-              <strong>${entry.service}</strong><br>
-              ${entry.username}<br>
-              ${entry.description || ""}
-            `;
-            list.appendChild(div);
-          });
+    const categories = Object.keys(data).sort();
+    categories.forEach(cat => {
+      const catDiv = document.createElement('div');
+      catDiv.className = 'category';
+      catDiv.textContent = cat;
+      catDiv.onclick = () => {
+        const next = catDiv.nextElementSibling;
+        next.classList.toggle('hidden');
+      };
 
-          section.appendChild(button);
-          section.appendChild(list);
-          container.appendChild(section);
-        });
+      const serviceList = document.createElement('div');
+
+      data[cat].forEach(service => {
+        const entry = document.createElement('div');
+        entry.className = 'service-entry';
+
+        const serviceName = `<strong>${service.service}</strong>`;
+        const username = `<div class="credentials"><span>Username:</span> ${service.username || '-'} <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.username || ''}')">Copy</button></div>`;
+        const passwordMasked = `<div class="credentials"><span>Password:</span> <input type="password" value="${service.password || ''}" readonly> <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button> <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.password || ''}')">Copy</button></div>`;
+        const desc = `<div class="description">${service.description || '(No description provided)'}</div>`;
+
+        entry.innerHTML = serviceName + username + passwordMasked + desc;
+        serviceList.appendChild(entry);
       });
-  </script>
+
+      serviceList.className = 'hidden';
+      container.appendChild(catDiv);
+      container.appendChild(serviceList);
+    });
+
+    // Search bar logic
+    document.getElementById('searchBar').addEventListener('input', e => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('.service-entry').forEach(entry => {
+        entry.style.display = entry.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+      });
+    });
+  });
+</script>
+
 </body>
 </html>
