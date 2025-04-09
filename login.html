@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secure Login</title>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: sans-serif; background: #2D3047; color: white; text-align: center; padding-top: 100px; }
+    input { padding: 10px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Enter Password to Access the Mindmap</h2>
+  <input type="password" id="pw" placeholder="Password" />
+  <button onclick="check()">Enter</button>
+  <script>
+    function check() {
+      const correct = "steed2025";
+      const entered = document.getElementById('pw').value;
+      if (entered === correct) {
+        window.location.href = "index.html";
+      } else {
+        alert("Incorrect password");
+      }
+    }
+  </script>
+</body>
+</html>
