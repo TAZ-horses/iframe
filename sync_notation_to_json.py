@@ -31,13 +31,15 @@ def parse_notion_data(pages):
     structured = {}
     for page in pages:
         props = page["properties"]
+        # Get the Category property (flexibly)
         category_prop = props.get("Category", {})
         service_prop = props.get("Service", {})
         username_prop = props.get("Username", {})
         password_prop = props.get("Password", {})
-        notes_prop = props.get("Notes", {})
+        desc_prop = props.get("Description", {})    # For "Description"
+        notes_prop = props.get("Notes", {})          # For "Notes"
 
-        # Flexible Category Handling
+        # Flexible handling of Category
         category = "Uncategorized"
         if "select" in category_prop and category_prop["select"]:
             category = category_prop["select"]["name"]
@@ -49,13 +51,16 @@ def parse_notion_data(pages):
         service = service_prop.get("title", [{}])[0].get("plain_text", "Unknown")
         username = username_prop.get("rich_text", [{}])[0].get("plain_text", "")
         password = password_prop.get("rich_text", [{}])[0].get("plain_text", "")
-        description = notes_prop.get("rich_text", [{}])[0].get("plain_text", "")
+        # Get both Description and Notes separately:
+        description = desc_prop.get("rich_text", [{}])[0].get("plain_text", "")
+        notes = notes_prop.get("rich_text", [{}])[0].get("plain_text", "")
 
         structured.setdefault(category, []).append({
             "service": service,
             "username": username,
             "password": password,
-            "description": description
+            "description": description,
+            "notes": notes
         })
     return structured
 
