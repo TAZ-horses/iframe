@@ -2,129 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Steed Media Mindmap - Visual</title>
+  <title>Steed Media Mindmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Instrument+Sans&display=swap" rel="stylesheet">
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #2D3047;
-      font-family: sans-serif;
-      overflow: hidden;
+      padding: 2rem;
+      font-family: 'Instrument Sans', sans-serif;
+      background-color: #2f3b2d;
+      color: white;
     }
 
-    .bubble {
-      position: absolute;
-      padding: 10px 16px;
-      border-radius: 20px;
-      background: #f8e71c;
-      color: #000;
-      font-size: 13px;
-      font-weight: bold;
-      text-align: center;
-      white-space: nowrap;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      z-index: 2;
-      min-width: 120px;
-    }
-
-    .bubble small {
-      display: block;
-      font-size: 11px;
-      font-weight: normal;
-      color: #333;
+    h1 {
+      font-family: 'Schibsted Grotesk', sans-serif;
+      color: #ee0505;
     }
 
     .category {
-      background: #FF6B6B !important;
-    }
-
-    svg#line-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
+      background-color: #2a423f;
+      border: none;
+      color: white;
+      padding: 1rem;
       width: 100%;
-      height: 100%;
+      text-align: left;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      border-radius: 0;
     }
 
-    .line {
-      stroke: #aaa;
-      stroke-width: 2;
+    .category:hover {
+      background-color: #344e3f;
+    }
+
+    .services {
+      display: none;
+      padding-left: 1.5rem;
+      background-color: #1e2a23;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-item {
+      margin: 1rem 0;
+      background: #f8e71c;
+      color: #000;
+      padding: 0.8rem;
+      border-radius: 0;
+      font-weight: bold;
+    }
+
+    .service-description {
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 0.9rem;
+      margin-top: 0.2rem;
+      color: #111;
     }
   </style>
 </head>
 <body>
+  <h1>Steed Media Mindmap</h1>
+  <div id="mindmap"></div>
 
-<svg id="line-layer"></svg>
-<div id="container"></div>
+  <script>
+    fetch("mindmap_data_synced.json")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("mindmap");
 
-<script>
-  fetch("mindmap_data_synced.json")
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById("container");
-      const svg = document.getElementById("line-layer");
+        Object.entries(data).forEach(([category, services]) => {
+          const btn = document.createElement("button");
+          btn.className = "category";
+          btn.textContent = category;
+          container.appendChild(btn);
 
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      const categoryRadius = 220;
-      const serviceRadius = 140;
+          const panel = document.createElement("div");
+          panel.className = "services";
 
-      const categories = Object.entries(data);
-      const angleStep = (2 * Math.PI) / categories.length;
+          services.forEach(service => {
+            const item = document.createElement("div");
+            item.className = "service-item";
+            item.innerHTML = `
+              ${service.service}<br/>
+              <span class="service-description">
+                ${service.username || ""}<br/>
+                ${service.description || ""}
+              </span>
+            `;
+            panel.appendChild(item);
+          });
 
-      categories.forEach(([category, entries], i) => {
-        const angle = i * angleStep;
-        const catX = centerX + categoryRadius * Math.cos(angle);
-        const catY = centerY + categoryRadius * Math.sin(angle);
+          container.appendChild(panel);
 
-        // Category node
-        const catNode = document.createElement("div");
-        catNode.className = "bubble category";
-        catNode.style.left = `${catX}px`;
-        catNode.style.top = `${catY}px`;
-        catNode.textContent = category;
-        container.appendChild(catNode);
-
-        // Line from center to category
-        const lineToCat = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        lineToCat.setAttribute("x1", centerX);
-        lineToCat.setAttribute("y1", centerY);
-        lineToCat.setAttribute("x2", catX + 40);
-        lineToCat.setAttribute("y2", catY + 20);
-        lineToCat.classList.add("line");
-        svg.appendChild(lineToCat);
-
-        // Services
-        const subAngleStep = Math.PI / 6;
-        entries.forEach((entry, j) => {
-          const subAngle = angle + (j - entries.length / 2) * subAngleStep;
-          const svcX = catX + serviceRadius * Math.cos(subAngle);
-          const svcY = catY + serviceRadius * Math.sin(subAngle);
-
-          const svcNode = document.createElement("div");
-          svcNode.className = "bubble";
-          svcNode.style.left = `${svcX}px`;
-          svcNode.style.top = `${svcY}px`;
-          svcNode.innerHTML = `
-            <strong>${entry.service}</strong><br>
-            ${entry.username || ""}<br>
-            <small>${entry.description || ""}</small>
-          `;
-          container.appendChild(svcNode);
-
-          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          line.setAttribute("x1", catX + 40);
-          line.setAttribute("y1", catY + 20);
-          line.setAttribute("x2", svcX + 30);
-          line.setAttribute("y2", svcY + 20);
-          line.classList.add("line");
-          svg.appendChild(line);
+          btn.addEventListener("click", () => {
+            panel.style.display = panel.style.display === "block" ? "none" : "block";
+          });
         });
       });
-    });
-</script>
-
+  </script>
 </body>
 </html>
