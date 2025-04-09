@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Steed Media Mindmap - Radial View</title>
+  <title>Steed Media Mindmap - Visual</title>
   <style>
     html, body {
       margin: 0;
@@ -28,6 +28,13 @@
       min-width: 120px;
     }
 
+    .bubble small {
+      display: block;
+      font-size: 11px;
+      font-weight: normal;
+      color: #333;
+    }
+
     .category {
       background: #FF6B6B !important;
     }
@@ -45,13 +52,6 @@
       stroke: #aaa;
       stroke-width: 2;
     }
-
-    small {
-      font-weight: normal;
-      font-size: 11px;
-      display: block;
-      color: #333;
-    }
   </style>
 </head>
 <body>
@@ -68,8 +68,8 @@
 
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
-      const categoryRadius = 200;
-      const serviceRadius = 120;
+      const categoryRadius = 220;
+      const serviceRadius = 140;
 
       const categories = Object.entries(data);
       const angleStep = (2 * Math.PI) / categories.length;
@@ -96,8 +96,8 @@
         lineToCat.classList.add("line");
         svg.appendChild(lineToCat);
 
-        // Place services around the category
-        const subAngleStep = (Math.PI / 4);
+        // Services
+        const subAngleStep = Math.PI / 6;
         entries.forEach((entry, j) => {
           const subAngle = angle + (j - entries.length / 2) * subAngleStep;
           const svcX = catX + serviceRadius * Math.cos(subAngle);
@@ -107,7 +107,11 @@
           svcNode.className = "bubble";
           svcNode.style.left = `${svcX}px`;
           svcNode.style.top = `${svcY}px`;
-          svcNode.innerHTML = `<strong>${entry.service}</strong><br>${entry.username || ""}<small>${entry.description || ""}</small>`;
+          svcNode.innerHTML = `
+            <strong>${entry.service}</strong><br>
+            ${entry.username || ""}<br>
+            <small>${entry.description || ""}</small>
+          `;
           container.appendChild(svcNode);
 
           const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
