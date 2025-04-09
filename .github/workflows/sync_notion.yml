@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false  # avoids git auth issues
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -32,5 +34,4 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add mindmap_data.json
-          git commit -m "Sync from Notion" || echo "No changes to commit"
-          git push
+          git diff --quiet && echo "No changes to commit" || (git commit -m "Sync from Notion" && git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main)
