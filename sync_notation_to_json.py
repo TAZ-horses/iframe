@@ -1,4 +1,4 @@
- from notion_client import Client
+from notion_client import Client
 import os
 import json
 from dotenv import load_dotenv
