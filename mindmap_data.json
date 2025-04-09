@@ -3,14 +3,19 @@
     {
       "service": "Dreamhost",
       "username": "admin@dreamhost.com",
-      "password": "yourpassword"
+      "password": "pw1"
     }
   ],
   "Social Media": [
     {
       "service": "Instagram",
       "username": "steedmedia",
-      "password": "instapass"
+      "password": "pw2"
+    },
+    {
+      "service": "Facebook",
+      "username": "steedteam",
+      "password": "pw3"
     }
   ]
 }
