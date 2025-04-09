@@ -37,10 +37,15 @@ def parse_notion_data(pages):
         password_prop = props.get("Password", {})
         notes_prop = props.get("Notes", {})
 
-        category = (
-            category_prop.get("select", {}).get("name") or
-            category_prop.get("rich_text", [{}])[0].get("plain_text") or
-            "Uncategorized"
+        category_prop = props["Category"]
+category = "Uncategorized"
+
+if "select" in category_prop and category_prop["select"]:
+    category = category_prop["select"]["name"]
+elif "rich_text" in category_prop and category_prop["rich_text"]:
+    category = category_prop["rich_text"][0]["plain_text"]
+elif "title" in category_prop and category_prop["title"]:
+    category = category_prop["title"][0]["plain_text"]
         )
         service = (
             service_prop.get("title", [{}])[0].get("plain_text") or
