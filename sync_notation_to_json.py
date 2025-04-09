@@ -31,29 +31,14 @@ def parse_notion_data(pages):
     structured = {}
     for page in pages:
         props = page["properties"]
-        # Get the Category property (flexibly)
-        category_prop = props.get("Category", {})
-        service_prop = props.get("Service", {})
-        username_prop = props.get("Username", {})
-        password_prop = props.get("Password", {})
-        desc_prop = props.get("Description", {})    # For "Description"
-        notes_prop = props.get("Notes", {})          # For "Notes"
-
-        # Flexible handling of Category
-        category = "Uncategorized"
-        if "select" in category_prop and category_prop["select"]:
-            category = category_prop["select"]["name"]
-        elif "rich_text" in category_prop and category_prop["rich_text"]:
-            category = category_prop["rich_text"][0]["plain_text"]
-        elif "title" in category_prop and category_prop["title"]:
-            category = category_prop["title"][0]["plain_text"]
-
-        service = service_prop.get("title", [{}])[0].get("plain_text", "Unknown")
-        username = username_prop.get("rich_text", [{}])[0].get("plain_text", "")
-        password = password_prop.get("rich_text", [{}])[0].get("plain_text", "")
-        # Get both Description and Notes separately:
-        description = desc_prop.get("rich_text", [{}])[0].get("plain_text", "")
-        notes = notes_prop.get("rich_text", [{}])[0].get("plain_text", "")
+        # Process Category using a default get() method: assume it is a select type.
+        # If it's not, the default "Uncategorized" will be used.
+        category = props["Category"].get("select", {}).get("name", "Uncategorized")
+        service = props["Service"]["title"][0]["plain_text"] if props["Service"]["title"] else "Unknown"
+        username = props["Username"]["rich_text"][0]["plain_text"] if props["Username"]["rich_text"] else ""
+        password = props["Password"]["rich_text"][0]["plain_text"] if props["Password"]["rich_text"] else ""
+        description = props["Description"]["rich_text"][0]["plain_text"] if props["Description"]["rich_text"] else ""
+        notes = props["Notes"]["rich_text"][0]["plain_text"] if props["Notes"]["rich_text"] else ""
 
         structured.setdefault(category, []).append({
             "service": service,
