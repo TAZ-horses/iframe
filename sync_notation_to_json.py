@@ -24,21 +24,22 @@ def fetch_notion_database(database_id):
         results.extend(response["results"])
         if not response.get("has_more"):
             break
-        next_cursor = response["next_cursor"]
+        next_cursor = response.get("next_cursor")
     return results
 
 def parse_notion_data(pages):
     structured = {}
-
     for page in pages:
         props = page["properties"]
-
-        category_prop = props.get("Category", {})
-        service_prop  = props.get("Service", {})
-        username_prop = props.get("Username", {})
-        password_prop = props.get("Password", {})
-        desc_prop     = props.get("Description", {})
-        notes_prop    = props.get("Notes", {})
+        
+        # Use either lowercase or uppercase property names.
+        # Adjust these keys if your Notion database column names differ.
+        category_prop = props.get("category", {}) or props.get("Category", {})
+        desc_prop     = props.get("description", {}) or props.get("Description", {})
+        service_prop  = props.get("service", {}) or props.get("Service", {})
+        username_prop = props.get("username", {}) or props.get("Username", {})
+        notes_prop    = props.get("notes", {}) or props.get("Notes", {})
+        password_prop = props.get("password", {}) or props.get("Password", {})
 
         # ---------- Category (Safe Fallback) -----------
         category = "Uncategorized"
@@ -61,30 +62,31 @@ def parse_notion_data(pages):
         if "rich_text" in username_prop and len(username_prop["rich_text"]) > 0:
             username = username_prop["rich_text"][0].get("plain_text", "")
 
+        # ---------- Notes (Safe Fallback) -----------
+        notes = ""
+        if "rich_text" in notes_prop and len(notes_prop["rich_text"]) > 0:
+            notes = notes_prop["rich_text"][0].get("plain_text", "")
+
         # ---------- Password (Safe Fallback) -----------
         password = ""
         if "rich_text" in password_prop and len(password_prop["rich_text"]) > 0:
             password = password_prop["rich_text"][0].get("plain_text", "")
 
-        # ---------- Description (Safe Fallback) ----------
+        # ---------- Description (Safe Fallback) -----------
         description = ""
         if "rich_text" in desc_prop and len(desc_prop["rich_text"]) > 0:
             description = desc_prop["rich_text"][0].get("plain_text", "")
 
-        # ---------- Notes (Safe Fallback) ----------
-        notes = ""
-        if "rich_text" in notes_prop and len(notes_prop["rich_text"]) > 0:
-            notes = notes_prop["rich_text"][0].get("plain_text", "")
-
-        # ---------- Build the structured dict ----------
-        structured.setdefault(category, []).append({
+        # Build the entry with keys in the desired order:
+        entry = {
+            "description": description,
             "service": service,
             "username": username,
-            "password": password,
-            "description": description,
-            "notes": notes
-        })
+            "notes": notes,
+            "password": password
+        }
 
+        structured.setdefault(category, []).append(entry)
     return structured
 
 pages = fetch_notion_database(database_id)
