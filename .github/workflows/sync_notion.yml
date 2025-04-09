@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
   run: pip install notion-client python-dotenv requests
   
-    - name: Run sync script
+    - name:  Run sync script
       env:
         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
       run: python sync_notation_to_json.py
