@@ -2,12 +2,12 @@ name: Sync Notion to JSON
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Every hour
+    - cron: "0 * * * *"  # Runs every hour
   workflow_dispatch:
   push:
     paths:
       - ".github/workflows/sync_notation.yml"
-      - "sync_notion_to_json.py"
+      - "sync_notation_to_json.py"
 
 env:
   PYTHON_VERSION: "3.10"
@@ -23,7 +23,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Ensure full history to allow pull/push
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -39,7 +39,7 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-        run: python sync_notion_to_json.py
+        run: python sync_notation_to_json.py
 
       - name: Pull latest changes to avoid non-fast-forward error
         run: |
