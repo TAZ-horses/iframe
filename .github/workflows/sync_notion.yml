@@ -23,9 +23,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required for proper history for push
+          fetch-depth: 0  # Ensure full history to allow pull/push
 
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -39,10 +39,14 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-        run: python sync_notation_to_json.py
-      - name: Pull latest changes to avoid non-fast-forward
-        run: git pull origin main --rebase
-  
+        run: python sync_notion_to_json.py
+
+      - name: Pull latest changes to avoid non-fast-forward error
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git pull origin main --rebase
+
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
@@ -51,5 +55,6 @@ jobs:
           add: mindmap_data_synced.json
           fetch: true
           push: true
+
       - name: List files for debugging
-        run: ls -al      
+        run: ls -al
