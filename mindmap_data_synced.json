@@ -1,45 +1,29 @@
 {
-  "Uncategorized": [
-    {
-      "description": "",
-      "service": "",
-      "username": "",
-      "notes": "",
-      "password": ""
-    },
-    {
-      "description": "",
-      "service": "",
-      "username": "",
-      "notes": "",
-      "password": ""
-    }
-  ],
   "business tools": [
     {
       "description": "Bing listing of business on seach engine",
-      "service": "",
+      "service": "bing.com",
       "username": "steedmedialtd@gmail.com",
       "notes": "",
       "password": "Monty42sultan"
     },
     {
       "description": "Gmail account which hosts youtube and backend development.",
-      "service": "",
+      "service": "google.com",
       "username": "steedmedialtd@gmail.com",
       "notes": "",
       "password": "Monty42sultan"
     },
     {
       "description": "hosts your website steedmedia.co.uk",
-      "service": "",
+      "service": "squareonline.com",
       "username": "cox5855@gmail.com",
       "notes": "",
       "password": "Monty42sultan"
     },
     {
       "description": "Digital contracts and signatures",
-      "service": "",
+      "service": "docusign.com",
       "username": "web.developments@steedmedia.co.uk",
       "notes": "",
       "password": "@Tontoroki2"
@@ -48,14 +32,14 @@
   "Hosting": [
     {
       "description": "Host your @",
-      "service": "",
+      "service": "dreamhost.com",
       "username": "steedmedialtd@gmail.com",
       "notes": "",
       "password": "@Tontoroki2"
     },
     {
       "description": "Hosts your Domains ",
-      "service": "",
+      "service": "fasthost.co.uk",
       "username": "web.development@steedmedia.co.uk",
       "notes": "",
       "password": "33kvdR2i3T!gNxB"
@@ -64,14 +48,14 @@
   "development": [
     {
       "description": "Code repository for website all embeded content for quick loading",
-      "service": "",
+      "service": "github.com",
       "username": "TAZ-horses",
       "notes": "",
       "password": "@Tontoroki22"
     },
     {
       "description": "AI tools and API access",
-      "service": "",
+      "service": "openai.com",
       "username": "",
       "notes": "",
       "password": "[ Add ]"
@@ -80,28 +64,28 @@
   "social media": [
     {
       "description": "Photo sharing & hosting",
-      "service": "",
+      "service": "flickr.com",
       "username": "web.developments@steedmedia.co.uk",
       "notes": "",
       "password": "@Tontoroki22"
     },
     {
       "description": "Visual portfolio and updates",
-      "service": "",
+      "service": "instagram.com",
       "username": "steedmedia_Ltd",
       "notes": "",
       "password": "@Tontoroki2"
     },
     {
       "description": "Professional profile & networking",
-      "service": "",
+      "service": "linkedin.com",
       "username": "cox5855@gmail.com",
       "notes": "",
       "password": "Monty42sultan"
     },
     {
       "description": "Social media page for Steed Media",
-      "service": "",
+      "service": "Facebook.com",
       "username": "07980474830",
       "notes": "",
       "password": "@Tontoroki2"
