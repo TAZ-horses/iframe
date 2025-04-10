@@ -59,8 +59,7 @@ def parse_notion_data(pages):
             props = page.get('properties', {})
             entry = {
                 "description": get_property_value(props.get("Description", {}), 'text'),
-                "service": get_property_value(props.get("Service", {}), 'title'),
-                "username": get_property_value(props.get("Username", {}), 'text'),
+                "service": get_property_value(props.get("Service", {}), 'text'),                "username": get_property_value(props.get("Username", {}), 'text'),
                 "notes": get_property_value(props.get("Notes", {}), 'text'),
                 "password": get_property_value(props.get("Password", {}), 'text')
             }
