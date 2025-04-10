@@ -49,5 +49,6 @@ jobs:
           add: mindmap_data_synced.json
           fetch: true
           push: true
-          - name: List files for debugging
-  run: ls -al
+          
+       - name: List files for debugging
+         run: ls -al
