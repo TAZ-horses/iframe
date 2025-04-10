@@ -1,52 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Steed Media Mindmap</title>
+  <style>
+    body {
+      font-family: 'Schibsted Grotesk', 'Instrument Sans', sans-serif;
+      background-color: #f4f1f1;
+      color: #2a423f;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      color: #ee0505;
+      margin-bottom: 10px;
+    }
+
+    #searchBar {
+      padding: 10px;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .category {
+      background: #2a423f;
+      color: white;
+      padding: 10px;
+      margin-top: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .entry-list {
+      padding-left: 10px;
+    }
+
+    .entry {
+      background: #ffe031;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-left: 5px solid #2f3b2d;
+    }
+
+    .description {
+      background: #fff8c6;
+      font-style: italic;
+      padding: 5px 10px;
+      margin-top: 8px;
+    }
+
+    .credentials {
+      margin-top: 5px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .copy-btn {
+      background: #2f3b2d;
+      color: white;
+      border: none;
+      padding: 3px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #ee0505;
+    }
+
+    input[type="password"] {
+      font-family: monospace;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Steed Media Mindmap</h1>
+<input type="text" id="searchBar" placeholder="Search services...">
+
+<div id="mindmapContainer"></div>
+
 <script>
-fetch('mindmap_data_synced.json')
-  .then(res => res.json())
-  .then(data => {
-    const container = document.getElementById('mindmapContainer');
+  // Safe loading of container
+  const container = document.getElementById('mindmapContainer');
+  if (!container) {
+    console.error("Missing #mindmapContainer element in HTML.");
+    throw new Error("Missing container element.");
+  }
 
-    Object.keys(data).sort().forEach(cat => {
-      const catDiv = document.createElement('div');
-      catDiv.className = 'category';
-      catDiv.textContent = cat;
-      catDiv.onclick = () => {
-        const next = catDiv.nextElementSibling;
-        next.classList.toggle('hidden');
-      };
+  fetch('mindmap_data_synced.json')
+    .then(res => res.json())
+    .then(data => {
+      Object.keys(data).sort().forEach(category => {
+        const catDiv = document.createElement('div');
+        catDiv.className = 'category';
+        catDiv.textContent = category;
+        container.appendChild(catDiv);
 
-      const serviceList = document.createElement('div');
-      serviceList.className = 'hidden';
+        const entryList = document.createElement('div');
+        entryList.className = 'entry-list';
 
-      data[cat].forEach(service => {
-        const entry = document.createElement('div');
-        entry.className = 'service-entry';
+        data[category].forEach(entry => {
+          const div = document.createElement('div');
+          div.className = 'entry';
 
-        entry.innerHTML = `
-          <strong>${service.service}</strong>
-          <div class="credentials">
-            <span>Username:</span> ${service.username || '-'}
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.username || ''}')">Copy</button>
-          </div>
-          <div class="credentials">
-            <span>Password:</span>
-            <input type="password" value="${service.password || ''}" readonly>
-            <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button>
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.password || ''}')">Copy</button>
-          </div>
-          <div class="description"><strong>Description:</strong> ${service.description || '(No description provided)'}</div>
-          <div class="description"><strong>Notes:</strong> ${service.notes || '(No notes provided)'}</div>
-        `;
-        serviceList.appendChild(entry);
+          const title = document.createElement('strong');
+          title.innerText = entry.service || '(No Service Title)';
+          div.appendChild(title);
+
+          const credentials = document.createElement('div');
+          credentials.className = 'credentials';
+          credentials.innerHTML = `
+            <div><strong>Username:</strong> ${entry.username || '—'}
+              <button class="copy-btn" onclick="navigator.clipboard.writeText('${entry.username || ''}')">Copy</button>
+            </div>
+            <div><strong>Password:</strong> <input type="password" value="${entry.password || ''}" readonly />
+              <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button>
+              <button class="copy-btn" onclick="navigator.clipboard.writeText('${entry.password || ''}')">Copy</button>
+            </div>
+          `;
+          div.appendChild(credentials);
+
+          const notes = document.createElement('div');
+          notes.className = 'description';
+          notes.textContent = entry.notes || entry.description || '(No description)';
+          div.appendChild(notes);
+
+          entryList.appendChild(div);
+        });
+
+        container.appendChild(entryList);
       });
 
-      container.appendChild(catDiv);
-      container.appendChild(serviceList);
-    });
-
-    document.getElementById('searchBar').addEventListener('input', e => {
-      const term = e.target.value.toLowerCase();
-      document.querySelectorAll('.service-entry').forEach(entry => {
-        entry.style.display = entry.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+      // Search bar functionality
+      document.getElementById('searchBar').addEventListener('input', e => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.entry').forEach(div => {
+          div.style.display = div.innerText.toLowerCase().includes(term) ? 'block' : 'none';
+        });
       });
+    })
+    .catch(err => {
+      container.innerHTML = `<p style="color: red;">Failed to load data: ${err.message}</p>`;
     });
-  });
 </script>
+
+</body>
+</html>
