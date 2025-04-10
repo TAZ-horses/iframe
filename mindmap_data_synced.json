@@ -8,88 +8,103 @@
       "password": ""
     },
     {
+      "description": "",
+      "service": "",
+      "username": "",
+      "notes": "",
+      "password": ""
+    }
+  ],
+  "business tools": [
+    {
       "description": "Bing listing of business on seach engine",
       "service": "",
       "username": "steedmedialtd@gmail.com",
       "notes": "",
-      "password": ""
+      "password": "Monty42sultan"
     },
     {
       "description": "Gmail account which hosts youtube and backend development.",
       "service": "",
       "username": "steedmedialtd@gmail.com",
       "notes": "",
-      "password": ""
-    },
-    {
-      "description": "Host your @",
-      "service": "",
-      "username": "steedmedialtd@gmail.com",
-      "notes": "",
-      "password": ""
-    },
-    {
-      "description": "Code repository for website all embeded content for quick loading",
-      "service": "",
-      "username": "TAZ-horses",
-      "notes": "",
-      "password": ""
-    },
-    {
-      "description": "Hosts your Domains ",
-      "service": "",
-      "username": "web.development@steedmedia.co.uk",
-      "notes": "",
-      "password": ""
-    },
-    {
-      "description": "Photo sharing & hosting",
-      "service": "",
-      "username": "web.developments@steedmedia.co.uk",
-      "notes": "",
-      "password": ""
-    },
-    {
-      "description": "AI tools and API access",
-      "service": "",
-      "username": "",
-      "notes": "",
-      "password": ""
+      "password": "Monty42sultan"
     },
     {
       "description": "hosts your website steedmedia.co.uk",
       "service": "",
       "username": "cox5855@gmail.com",
       "notes": "",
-      "password": ""
+      "password": "Monty42sultan"
     },
     {
       "description": "Digital contracts and signatures",
       "service": "",
       "username": "web.developments@steedmedia.co.uk",
       "notes": "",
-      "password": ""
+      "password": "@Tontoroki2"
+    }
+  ],
+  "Hosting": [
+    {
+      "description": "Host your @",
+      "service": "",
+      "username": "steedmedialtd@gmail.com",
+      "notes": "",
+      "password": "@Tontoroki2"
+    },
+    {
+      "description": "Hosts your Domains ",
+      "service": "",
+      "username": "web.development@steedmedia.co.uk",
+      "notes": "",
+      "password": "33kvdR2i3T!gNxB"
+    }
+  ],
+  "development": [
+    {
+      "description": "Code repository for website all embeded content for quick loading",
+      "service": "",
+      "username": "TAZ-horses",
+      "notes": "",
+      "password": "@Tontoroki22"
+    },
+    {
+      "description": "AI tools and API access",
+      "service": "",
+      "username": "",
+      "notes": "",
+      "password": "[ Add ]"
+    }
+  ],
+  "social media": [
+    {
+      "description": "Photo sharing & hosting",
+      "service": "",
+      "username": "web.developments@steedmedia.co.uk",
+      "notes": "",
+      "password": "@Tontoroki22"
     },
     {
       "description": "Visual portfolio and updates",
       "service": "",
       "username": "steedmedia_Ltd",
       "notes": "",
-      "password": ""
+      "password": "@Tontoroki2"
     },
     {
       "description": "Professional profile & networking",
       "service": "",
       "username": "cox5855@gmail.com",
       "notes": "",
-      "password": ""
+      "password": "Monty42sultan"
     },
     {
       "description": "Social media page for Steed Media",
       "service": "",
       "username": "07980474830",
       "notes": "",
-      "password": ""
+      "password": "@Tontoroki2"
     }
   ]
 }
