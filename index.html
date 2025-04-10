@@ -4,154 +4,196 @@
   <meta charset="UTF-8" />
   <title>Steed Media Mindmap</title>
   <style>
+    :root {
+      --green: #2a423f;
+      --red: #ee0505;
+      --dark: #2f3b2d;
+      --bg: #f4f1f1;
+      --font-headline: 'Schibsted Grotesk', sans-serif;
+      --font-body: 'Instrument Sans', sans-serif;
+    }
+
     body {
-      font-family: 'Schibsted Grotesk', 'Instrument Sans', sans-serif;
-      background-color: #f4f1f1;
-      color: #2a423f;
-      padding: 20px;
       margin: 0;
+      background: var(--bg);
+      font-family: var(--font-body);
+      overflow: hidden;
     }
 
-    h1 {
-      color: #ee0505;
-      margin-bottom: 10px;
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
     }
 
-    #searchBar {
-      padding: 10px;
-      width: 100%;
-      max-width: 400px;
-      margin-bottom: 20px;
-      font-size: 16px;
-    }
-
-    .category {
-      background: #2a423f;
+    #center-node {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--green);
       color: white;
-      padding: 10px;
-      margin-top: 20px;
-      font-weight: bold;
+      font-family: var(--font-headline);
+      padding: 20px 30px;
+      border-radius: 8px;
+      font-size: 24px;
+      z-index: 2;
+    }
+
+    .bubble {
+      position: absolute;
+      background: white;
+      border: 2px solid var(--dark);
+      border-radius: 12px;
+      padding: 10px 15px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
       cursor: pointer;
+      transition: transform 0.2s;
+      z-index: 3;
     }
 
-    .entry-list {
-      padding-left: 10px;
+    .bubble:hover {
+      transform: scale(1.05);
+      background: var(--green);
+      color: white;
     }
 
-    .entry {
-      background: #ffe031;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-left: 5px solid #2f3b2d;
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 320px;
+      background: white;
+      border: 2px solid var(--green);
+      padding: 20px;
+      transform: translate(-50%, -50%);
+      display: none;
+      z-index: 100;
     }
 
-    .description {
-      background: #fff8c6;
-      font-style: italic;
-      padding: 5px 10px;
-      margin-top: 8px;
+    .modal h3 {
+      margin-top: 0;
+      font-family: var(--font-headline);
+    }
+
+    .modal .close {
+      float: right;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--red);
     }
 
     .credentials {
-      margin-top: 5px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      font-size: 14px;
+      margin-top: 10px;
     }
 
-    .copy-btn {
-      background: #2f3b2d;
-      color: white;
-      border: none;
-      padding: 3px 6px;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-
-    .copy-btn:hover {
-      background: #ee0505;
-    }
-
-    input[type="password"] {
+    .credentials input {
+      width: 100%;
+      margin: 5px 0;
+      padding: 5px;
       font-family: monospace;
-    }
-
-    .hidden {
-      display: none;
     }
   </style>
 </head>
 <body>
+  <div id="center-node">Steed Media</div>
+  <canvas id="canvas"></canvas>
+  <div id="modal" class="modal">
+    <div><span class="close" onclick="closeModal()">×</span></div>
+    <h3 id="modal-service"></h3>
+    <div class="credentials">
+      <strong>Username:</strong>
+      <input type="text" id="modal-username" readonly>
+      <strong>Password:</strong>
+      <input type="password" id="modal-password" readonly>
+      <strong>Notes:</strong>
+      <p id="modal-notes"></p>
+    </div>
+  </div>
 
-<h1>Steed Media Mindmap</h1>
-<input type="text" id="searchBar" placeholder="Search services...">
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
 
-<div id="mindmapContainer"></div>
-
-<script>
-  // Safe loading of container
-  const container = document.getElementById('mindmapContainer');
-  if (!container) {
-    console.error("Missing #mindmapContainer element in HTML.");
-    throw new Error("Missing container element.");
-  }
-
-  fetch('mindmap_data_synced.json')
-    .then(res => res.json())
-    .then(data => {
-      Object.keys(data).sort().forEach(category => {
-        const catDiv = document.createElement('div');
-        catDiv.className = 'category';
-        catDiv.textContent = category;
-        container.appendChild(catDiv);
-
-        const entryList = document.createElement('div');
-        entryList.className = 'entry-list';
-
-        data[category].forEach(entry => {
-          const div = document.createElement('div');
-          div.className = 'entry';
-
-          const title = document.createElement('strong');
-          title.innerText = entry.service || '(No Service Title)';
-          div.appendChild(title);
-
-          const credentials = document.createElement('div');
-          credentials.className = 'credentials';
-          credentials.innerHTML = `
-            <div><strong>Username:</strong> ${entry.username || '—'}
-              <button class="copy-btn" onclick="navigator.clipboard.writeText('${entry.username || ''}')">Copy</button>
-            </div>
-            <div><strong>Password:</strong> <input type="password" value="${entry.password || ''}" readonly />
-              <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button>
-              <button class="copy-btn" onclick="navigator.clipboard.writeText('${entry.password || ''}')">Copy</button>
-            </div>
-          `;
-          div.appendChild(credentials);
-
-          const notes = document.createElement('div');
-          notes.className = 'description';
-          notes.textContent = entry.notes || entry.description || '(No description)';
-          div.appendChild(notes);
-
-          entryList.appendChild(div);
-        });
-
-        container.appendChild(entryList);
-      });
-
-      // Search bar functionality
-      document.getElementById('searchBar').addEventListener('input', e => {
-        const term = e.target.value.toLowerCase();
-        document.querySelectorAll('.entry').forEach(div => {
-          div.style.display = div.innerText.toLowerCase().includes(term) ? 'block' : 'none';
-        });
-      });
-    })
-    .catch(err => {
-      container.innerHTML = `<p style="color: red;">Failed to load data: ${err.message}</p>`;
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      drawLines();
     });
-</script>
 
+    const bubbles = [];
+    const radius = 250;
+    let data = {};
+
+    fetch('mindmap_data_synced.json')
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        renderMindmap();
+      });
+
+    function renderMindmap() {
+      const categories = Object.keys(data);
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const angleStep = (2 * Math.PI) / categories.length;
+
+      categories.forEach((cat, i) => {
+        const angle = i * angleStep;
+        const catX = centerX + radius * Math.cos(angle);
+        const catY = centerY + radius * Math.sin(angle);
+
+        data[cat].forEach((service, j) => {
+          const offset = 80 + j * 60;
+          const angleJ = angle + (Math.PI / 64) * j;
+          const x = catX + offset * Math.cos(angleJ);
+          const y = catY + offset * Math.sin(angleJ);
+
+          const div = document.createElement('div');
+          div.className = 'bubble';
+          div.style.left = `${x}px`;
+          div.style.top = `${y}px`;
+          div.textContent = service.service || "(No Service)";
+          div.onclick = () => openModal(service);
+          document.body.appendChild(div);
+
+          bubbles.push({ x, y, label: service.service });
+        });
+      });
+
+      drawLines();
+    }
+
+    function drawLines() {
+      ctx.clearRect(0, 0, width, height);
+      const cx = width / 2;
+      const cy = height / 2;
+      bubbles.forEach(b => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(b.x + 30, b.y + 15);
+        ctx.strokeStyle = '#999';
+        ctx.stroke();
+      });
+    }
+
+    function openModal(service) {
+      document.getElementById('modal-service').textContent = service.service || "No Title";
+      document.getElementById('modal-username').value = service.username || '';
+      document.getElementById('modal-password').value = service.password || '';
+      document.getElementById('modal-notes').textContent = service.notes || '(No notes)';
+      document.getElementById('modal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
