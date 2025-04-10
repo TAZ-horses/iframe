@@ -3,197 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <title>Steed Media Mindmap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --green: #2a423f;
-      --red: #ee0505;
-      --dark: #2f3b2d;
-      --bg: #f4f1f1;
-      --font-headline: 'Schibsted Grotesk', sans-serif;
-      --font-body: 'Instrument Sans', sans-serif;
-    }
-
     body {
       margin: 0;
-      background: var(--bg);
-      font-family: var(--font-body);
-      overflow: hidden;
+      padding: 20px;
+      font-family: 'Instrument Sans', sans-serif;
+      background: #f4f4f4;
+      color: #2a423f;
     }
 
-    #canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
+    h1 {
+      font-family: 'Schibsted Grotesk', sans-serif;
+      font-size: 2.4em;
+      color: #ee0505;
+      margin-bottom: 20px;
     }
 
-    #center-node {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--green);
+    .category {
+      background: #2a423f;
       color: white;
-      font-family: var(--font-headline);
-      padding: 20px 30px;
-      border-radius: 8px;
-      font-size: 24px;
-      z-index: 2;
+      padding: 12px;
+      font-weight: bold;
+      font-size: 18px;
+      border-left: 5px solid #ee0505;
+      margin-top: 25px;
+    }
+
+    .entry {
+      background: #fff;
+      margin: 10px 0;
+      padding: 12px;
+      border-left: 5px solid #2f3b2d;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .bubble {
-      position: absolute;
-      background: white;
-      border: 2px solid var(--dark);
-      border-radius: 12px;
-      padding: 10px 15px;
-      font-family: var(--font-body);
-      font-size: 14px;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: transform 0.2s;
-      z-index: 3;
+      margin: 4px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95em;
     }
 
-    .bubble:hover {
-      transform: scale(1.05);
-      background: var(--green);
-      color: white;
-    }
-
-    .modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 320px;
-      background: white;
-      border: 2px solid var(--green);
-      padding: 20px;
-      transform: translate(-50%, -50%);
-      display: none;
-      z-index: 100;
-    }
-
-    .modal h3 {
-      margin-top: 0;
-      font-family: var(--font-headline);
-    }
-
-    .modal .close {
-      float: right;
-      font-size: 18px;
-      cursor: pointer;
-      color: var(--red);
-    }
-
-    .credentials {
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    .credentials input {
-      width: 100%;
-      margin: 5px 0;
-      padding: 5px;
+    .bubble input {
       font-family: monospace;
+      width: 60%;
+    }
+
+    .copy-btn {
+      margin-left: 8px;
+      background: #2a423f;
+      color: #fff;
+      border: none;
+      padding: 3px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #ee0505;
+    }
+
+    .description {
+      font-style: italic;
+      color: #444;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 600px) {
+      .bubble {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .bubble input {
+        width: 100%;
+        margin-bottom: 4px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="center-node">Steed Media</div>
-  <canvas id="canvas"></canvas>
-  <div id="modal" class="modal">
-    <div><span class="close" onclick="closeModal()">×</span></div>
-    <h3 id="modal-service"></h3>
-    <div class="credentials">
-      <strong>Username:</strong>
-      <input type="text" id="modal-username" readonly>
-      <strong>Password:</strong>
-      <input type="password" id="modal-password" readonly>
-      <strong>Notes:</strong>
-      <p id="modal-notes"></p>
-    </div>
-  </div>
 
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+<h1>Steed Media Mindmap</h1>
+<div id="mindmap"></div>
 
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      drawLines();
+<script>
+fetch("mindmap_data_synced.json")
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("mindmap");
+    Object.keys(data).forEach(cat => {
+      const catBlock = document.createElement("div");
+      catBlock.className = "category";
+      catBlock.textContent = `${data[cat].icon} ${cat}`;
+      container.appendChild(catBlock);
+
+      data[cat].entries.forEach(entry => {
+        const div = document.createElement("div");
+        div.className = "entry";
+        div.innerHTML = `
+          <strong>${entry.service}</strong>
+          <div class="bubble">Username: ${entry.username || '-'} <button class="copy-btn" onclick="navigator.clipboard.writeText('${entry.username || ''}')">Copy</button></div>
+          <div class="bubble">Password: <input type="password" value="${entry.password || ''}" readonly />
+            <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('${entry.password || ''}')">Copy</button>
+          </div>
+          <div class="description">${entry.description || '(No description)'}</div>
+          <div class="description"><strong>Notes:</strong> ${entry.notes || '-'}</div>
+        `;
+        container.appendChild(div);
+      });
     });
-
-    const bubbles = [];
-    const radius = 250;
-    let data = {};
-
-    fetch('mindmap_data_synced.json')
-      .then(res => res.json())
-      .then(json => {
-        data = json;
-        renderMindmap();
-      });
-
-    function renderMindmap() {
-      const categories = Object.keys(data);
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const angleStep = (2 * Math.PI) / categories.length;
-
-      categories.forEach((cat, i) => {
-        const angle = i * angleStep;
-        const catX = centerX + radius * Math.cos(angle);
-        const catY = centerY + radius * Math.sin(angle);
-
-        data[cat].forEach((service, j) => {
-          const offset = 80 + j * 60;
-          const angleJ = angle + (Math.PI / 64) * j;
-          const x = catX + offset * Math.cos(angleJ);
-          const y = catY + offset * Math.sin(angleJ);
-
-          const div = document.createElement('div');
-          div.className = 'bubble';
-          div.style.left = `${x}px`;
-          div.style.top = `${y}px`;
-          div.textContent = service.service || "(No Service)";
-          div.onclick = () => openModal(service);
-          document.body.appendChild(div);
-
-          bubbles.push({ x, y, label: service.service });
-        });
-      });
-
-      drawLines();
-    }
-
-    function drawLines() {
-      ctx.clearRect(0, 0, width, height);
-      const cx = width / 2;
-      const cy = height / 2;
-      bubbles.forEach(b => {
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(b.x + 30, b.y + 15);
-        ctx.strokeStyle = '#999';
-        ctx.stroke();
-      });
-    }
-
-    function openModal(service) {
-      document.getElementById('modal-service').textContent = service.service || "No Title";
-      document.getElementById('modal-username').value = service.username || '';
-      document.getElementById('modal-password').value = service.password || '';
-      document.getElementById('modal-notes').textContent = service.notes || '(No notes)';
-      document.getElementById('modal').style.display = 'block';
-    }
-
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-  </script>
+  });
+</script>
 </body>
 </html>
