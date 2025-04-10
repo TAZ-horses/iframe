@@ -7,7 +7,7 @@ on:
   push:
     paths:
       - ".github/workflows/sync_notion.yml"
-      - "sync_notion_to_json.py"
+      - "sync_notation_to_json.py"
       - "requirements.txt"
 
 env:
