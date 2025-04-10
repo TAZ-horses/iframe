@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - ".github/workflows/sync_notion.yml"
+      - ".github/workflows/sync_notation.yml"
       - "sync_notion_to_json.py"
 
 env:
