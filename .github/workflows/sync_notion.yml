@@ -2,13 +2,12 @@ name: Sync Notion to JSON
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Hourly
+    - cron: "0 * * * *"  # Every hour
   workflow_dispatch:
   push:
     paths:
       - ".github/workflows/sync_notion.yml"
-      - "sync_notation_to_json.py"
-      - "requirements.txt"
+      - "sync_notion_to_json.py"
 
 env:
   PYTHON_VERSION: "3.10"
@@ -17,13 +16,14 @@ jobs:
   sync-notion:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Needed to allow pushing back to the repo
+      contents: write
+      actions: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Required for proper history for push
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
@@ -39,13 +39,13 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-        run: python sync_notation_to_json.py
-        
+        run: python sync_notion_to_json.py
+
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actions
           message: "chore: Auto-sync from Notion"
           add: mindmap_data_synced.json
-          fetch: true     # ✅ Enables git fetch before commit
-          push: true      # ✅ Pushes the commit     
+          fetch: true
+          push: true
