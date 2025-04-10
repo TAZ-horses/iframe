@@ -40,7 +40,9 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python sync_notation_to_json.py
-
+      - name: Pull latest changes to avoid non-fast-forward
+        run: git pull origin main --rebase
+  
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
