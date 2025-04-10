@@ -4,7 +4,7 @@ import json
 from dotenv import load_dotenv
 import logging
 
-# Configure logging
+# Set up logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
@@ -22,14 +22,14 @@ def get_property_value(prop, prop_type='text'):
             return prop['select']['name'] if prop.get('select') else 'Uncategorized'
         return ''
     except (KeyError, IndexError, TypeError) as e:
-        logger.warning(f"Error parsing property: {str(e)}")
+        logger.warning(f"Error parsing property: {e}")
         return ''
 
 def fetch_notion_database(database_id, notion):
     """Fetch all pages from a Notion database with pagination."""
     results = []
     next_cursor = None
-    
+
     try:
         while True:
             query_params = {"database_id": database_id}
@@ -37,57 +37,62 @@ def fetch_notion_database(database_id, notion):
                 query_params["start_cursor"] = next_cursor
 
             response = notion.databases.query(**query_params)
-            results.extend(response.get('results', []))
-            
-            if not response.get('has_more'):
+            results.extend(response.get("results", []))
+
+            if not response.get("has_more"):
                 break
-            next_cursor = response.get('next_cursor')
-            
-        logger.info(f"Fetched {len(results)} pages from Notion")
+
+            next_cursor = response.get("next_cursor")
+
+        logger.info(f"Fetched {len(results)} pages from Notion.")
         return results
     except Exception as e:
-        logger.error(f"Failed to fetch database: {str(e)}")
+        logger.error(f"Failed to fetch database: {e}")
         raise
 
 def parse_notion_data(pages):
-    """Transform Notion API response into structured data."""
+    """Transform Notion API response into structured mindmap-ready JSON."""
     structured = {}
-    
+
     for page in pages:
         try:
             props = page.get('properties', {})
             entry = {
-                "description": get_property_value(props.get('Description', {}), 'text'),
-                "service": get_property_value(props.get('Service', {}), 'title'),
-                "username": get_property_value(props.get('Username', {}), 'text'),
-                "notes": get_property_value(props.get('Notes', {}), 'text'),
-                "password": get_property_value(props.get('Password', {}), 'text')
+                "description": get_property_value(props.get("Description", {}), 'text'),
+                "service": get_property_value(props.get("Service", {}), 'title'),
+                "username": get_property_value(props.get("Username", {}), 'text'),
+                "notes": get_property_value(props.get("Notes", {}), 'text'),
+                "password": get_property_value(props.get("Password", {}), 'text')
             }
-            category = get_property_value(props.get('Category', {}), 'select')
+            category = get_property_value(props.get("Category", {}), 'select')
             structured.setdefault(category, []).append(entry)
         except Exception as e:
-            logger.error(f"Error parsing page {page.get('id')}: {str(e)}")
+            logger.error(f"Error parsing page {page.get('id')}: {e}")
             continue
-            
+
     return structured
 
 def main():
-    """Main execution flow."""
     load_dotenv()
-    
+    notion_token = os.getenv("NOTION_TOKEN")
+    database_id = os.getenv("NOTION_DATABASE_ID")
+
+    if not notion_token or not database_id:
+        logger.error("Missing NOTION_TOKEN or NOTION_DATABASE_ID environment variables.")
+        raise SystemExit(1)
+
+    notion = Client(auth=notion_token)
+
     try:
-        notion = Client(auth=os.getenv("NOTION_TOKEN"))
-        database_id = os.getenv("NOTION_DATABASE_ID")
-        
         pages = fetch_notion_database(database_id, notion)
-        structured_data = parse_notion_data(pages)
-        
+        data = parse_notion_data(pages)
+
         with open("mindmap_data_synced.json", "w") as f:
-            json.dump(structured_data, f, indent=2)
-            logger.info("Successfully wrote data to mindmap_data_synced.json")
-            
+            json.dump(data, f, indent=2)
+            logger.info("Data successfully written to mindmap_data_synced.json")
+
     except Exception as e:
-        logger.error(f"Critical error in main execution: {str(e)}")
+        logger.error(f"Critical error: {e}")
         raise SystemExit(1)
 
 if __name__ == "__main__":
