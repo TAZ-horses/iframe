@@ -57,12 +57,18 @@ def parse_notion_data(pages):
     for page in pages:
         try:
             props = page.get('properties', {})
+            service = get_property_value(props.get("Service", {}), 'title')
+            if not service:
+                continue  # Skip entry if Service (title) is blank
+
             entry = {
                 "description": get_property_value(props.get("Description", {}), 'text'),
-                "service": get_property_value(props.get("Service", {}), 'text'),                "username": get_property_value(props.get("Username", {}), 'text'),
+                "service": service,
+                "username": get_property_value(props.get("Username", {}), 'text'),
                 "notes": get_property_value(props.get("Notes", {}), 'text'),
                 "password": get_property_value(props.get("Password", {}), 'text')
             }
+
             category = get_property_value(props.get("Category", {}), 'select')
             structured.setdefault(category, []).append(entry)
         except Exception as e:
@@ -88,7 +94,7 @@ def main():
 
         with open("mindmap_data_synced.json", "w") as f:
             json.dump(data, f, indent=2)
-            logger.info("Data successfully written to mindmap_data_synced.json")
+            logger.info("✅ Data written to mindmap_data_synced.json")
 
     except Exception as e:
         logger.error(f"Critical error: {e}")
