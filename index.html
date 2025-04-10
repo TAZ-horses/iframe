@@ -1,92 +1,3 @@
- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Steed Media Mindmap</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: 'Schibsted Grotesk', 'Instrument Sans', sans-serif;
-      background-color: #f4f1f1;
-      color: #2a423f;
-    }
-
-    h1 {
-      color: #ee0505;
-    }
-
-    #searchBar {
-      margin-bottom: 20px;
-      width: 100%;
-      max-width: 500px;
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    .category {
-      background: #2a423f;
-      color: #fff;
-      padding: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    .service-entry {
-      background: #ffe031;
-      padding: 10px;
-      margin: 5px 0;
-      border-left: 5px solid #2f3b2d;
-    }
-
-    .description {
-      background: #fff8c6;
-      font-style: italic;
-      padding: 5px 10px;
-      margin-bottom: 10px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .credentials {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .credentials span {
-      font-weight: bold;
-    }
-
-    .copy-btn {
-      background: #2f3b2d;
-      color: #fff;
-      padding: 3px 6px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .copy-btn:hover {
-      background: #ee0505;
-    }
-
-    input[type="password"] {
-      font-family: monospace;
-    }
-  </style>
-</head>
-<body>
-
-<h1>Steed Media Mindmap</h1>
-<input type="text" id="searchBar" placeholder="Search services...">
-
-<div id="mindmapContainer"></div>
-
 <script>
 fetch('mindmap_data_synced.json')
   .then(res => res.json())
@@ -110,11 +21,31 @@ fetch('mindmap_data_synced.json')
         entry.className = 'service-entry';
 
         const serviceName = `<strong>${service.service}</strong>`;
-        const username = `<div class="credentials"><span>Username:</span> ${service.username || '-'} <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.username || ''}')">Copy</button></div>`;
-        const passwordMasked = `<div class="credentials"><span>Password:</span> <input type="password" value="${service.password || ''}" readonly> <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button> <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.password || ''}')">Copy</button></div>`;
-        const desc = `<div class="description">${service.description || '(No description provided)'}</div>`;
+        const username = `
+          <div class="credentials">
+            <span>Username:</span> ${service.username || '-'}
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.username || ''}')">Copy</button>
+          </div>`;
 
-        entry.innerHTML = serviceName + username + passwordMasked + desc;
+        const passwordMasked = `
+          <div class="credentials">
+            <span>Password:</span>
+            <input type="password" value="${service.password || ''}" readonly>
+            <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.password || ''}')">Copy</button>
+          </div>`;
+
+        const description = `
+          <div class="description">
+            <strong>Description:</strong> ${service.description || '(No description provided)'}
+          </div>`;
+
+        const notes = `
+          <div class="description">
+            <strong>Notes:</strong> ${service.notes || '(No notes provided)'}
+          </div>`;
+
+        entry.innerHTML = serviceName + username + passwordMasked + description + notes;
         serviceList.appendChild(entry);
       });
 
@@ -132,6 +63,3 @@ fetch('mindmap_data_synced.json')
     });
   });
 </script>
-
-</body>
-</html>
