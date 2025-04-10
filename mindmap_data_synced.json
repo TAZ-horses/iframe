@@ -63,7 +63,7 @@
     {
       "service": "openai.com",
       "description": "AI tools and API access",
-      "username": "",
+      "username": "steed",
       "password": "[ Add ]",
       "notes": "",
       "icon": "\ud83e\udde9"
