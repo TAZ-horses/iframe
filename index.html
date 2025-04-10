@@ -4,8 +4,7 @@ fetch('mindmap_data_synced.json')
   .then(data => {
     const container = document.getElementById('mindmapContainer');
 
-    const categories = Object.keys(data).sort();
-    categories.forEach(cat => {
+    Object.keys(data).sort().forEach(cat => {
       const catDiv = document.createElement('div');
       catDiv.className = 'category';
       catDiv.textContent = cat;
@@ -15,46 +14,34 @@ fetch('mindmap_data_synced.json')
       };
 
       const serviceList = document.createElement('div');
+      serviceList.className = 'hidden';
 
       data[cat].forEach(service => {
         const entry = document.createElement('div');
         entry.className = 'service-entry';
 
-        const serviceName = `<strong>${service.service}</strong>`;
-        const username = `
+        entry.innerHTML = `
+          <strong>${service.service}</strong>
           <div class="credentials">
             <span>Username:</span> ${service.username || '-'}
             <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.username || ''}')">Copy</button>
-          </div>`;
-
-        const passwordMasked = `
+          </div>
           <div class="credentials">
             <span>Password:</span>
             <input type="password" value="${service.password || ''}" readonly>
             <button class="copy-btn" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">👁</button>
             <button class="copy-btn" onclick="navigator.clipboard.writeText('${service.password || ''}')">Copy</button>
-          </div>`;
-
-        const description = `
-          <div class="description">
-            <strong>Description:</strong> ${service.description || '(No description provided)'}
-          </div>`;
-
-        const notes = `
-          <div class="description">
-            <strong>Notes:</strong> ${service.notes || '(No notes provided)'}
-          </div>`;
-
-        entry.innerHTML = serviceName + username + passwordMasked + description + notes;
+          </div>
+          <div class="description"><strong>Description:</strong> ${service.description || '(No description provided)'}</div>
+          <div class="description"><strong>Notes:</strong> ${service.notes || '(No notes provided)'}</div>
+        `;
         serviceList.appendChild(entry);
       });
 
-      serviceList.className = 'hidden';
       container.appendChild(catDiv);
       container.appendChild(serviceList);
     });
 
-    // Search bar logic
     document.getElementById('searchBar').addEventListener('input', e => {
       const term = e.target.value.toLowerCase();
       document.querySelectorAll('.service-entry').forEach(entry => {
