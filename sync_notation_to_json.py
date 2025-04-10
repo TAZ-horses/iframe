@@ -4,19 +4,19 @@ import json
 from dotenv import load_dotenv
 import logging
 
-# Set up logging
+# Logging config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-CATEGORY_ICONS = {
+ICON_MAP = {
     "Hosting": "🖥️",
-    "Development": "💻",
+    "Development": "🛠️",
     "Social Media": "📱",
-    "Business Tools": "🧰",
-    "Marketing": "📣",
-    "Finance": "💳",
-    "Operations": "⚙️",
-    "Uncategorized": "📦"
+    "Business Tools": "📂",
+    "Design": "🎨",
+    "Admin": "🗂️",
+    "Marketing": "📈",
+    "Default": "🧩"
 }
 
 def get_property_value(prop, prop_type='text'):
@@ -28,21 +28,21 @@ def get_property_value(prop, prop_type='text'):
         elif prop_type == 'select':
             return prop['select']['name'] if prop.get('select') else 'Uncategorized'
         return ''
-    except (KeyError, IndexError, TypeError):
+    except (KeyError, IndexError, TypeError) as e:
+        logger.warning(f"Property parse error: {e}")
         return ''
 
 def fetch_notion_database(database_id, notion):
-    results = []
-    next_cursor = None
+    results, next_cursor = [], None
     while True:
         query = {"database_id": database_id}
         if next_cursor:
             query["start_cursor"] = next_cursor
         response = notion.databases.query(**query)
         results.extend(response.get("results", []))
-        if not response.get("has_more"):
-            break
+        if not response.get("has_more"): break
         next_cursor = response.get("next_cursor")
+    logger.info(f"✅ Fetched {len(results)} entries")
     return results
 
 def parse_notion_data(pages):
@@ -53,31 +53,38 @@ def parse_notion_data(pages):
             service = get_property_value(props.get("Service", {}), "title")
             if not service:
                 continue
+
+            category = get_property_value(props.get("Category", {}), "select")
+            icon = ICON_MAP.get(category, ICON_MAP["Default"])
+
             entry = {
-                "service": service,
+                "title": service,
                 "description": get_property_value(props.get("Description", {}), "text"),
                 "username": get_property_value(props.get("Username", {}), "text"),
+                "notes": get_property_value(props.get("Notes", {}), "text"),
                 "password": get_property_value(props.get("Password", {}), "text"),
-                "notes": get_property_value(props.get("Notes", {}), "text")
+                "icon": icon
             }
-            category = get_property_value(props.get("Category", {}), "select")
-            icon = CATEGORY_ICONS.get(category, "📦")
-            if category not in structured:
-                structured[category] = {"icon": icon, "entries": []}
-            structured[category]["entries"].append(entry)
+            structured.setdefault(category, []).append(entry)
         except Exception as e:
-            logger.error(f"Failed to parse entry: {e}")
+            logger.error(f"Parse error on page {page.get('id')}: {e}")
             continue
     return structured
 
 def main():
     load_dotenv()
     notion = Client(auth=os.getenv("NOTION_TOKEN"))
-    db_id = os.getenv("NOTION_DATABASE_ID")
-    pages = fetch_notion_database(db_id, notion)
+    database_id = os.getenv("NOTION_DATABASE_ID")
+    if not notion or not database_id:
+        logger.error("Missing environment variables.")
+        raise SystemExit(1)
+
+    pages = fetch_notion_database(database_id, notion)
     data = parse_notion_data(pages)
+
     with open("mindmap_data_synced.json", "w") as f:
         json.dump(data, f, indent=2)
+        logger.info("✅ mindmap_data_synced.json written successfully")
 
 if __name__ == "__main__":
     main()
