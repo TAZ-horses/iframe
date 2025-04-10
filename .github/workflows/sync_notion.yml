@@ -47,4 +47,4 @@ jobs:
           default_author: github_actions
           message: "chore: Auto-sync from Notion"
           add: "mindmap_data_synced.json"
-          pull_strategy: merge
+          pull_strategy: true
