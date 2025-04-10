@@ -2,7 +2,7 @@ name: Sync Notion to JSON
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Every hour
+    - cron: "*/5 * * * *"  # every 5 minutes
   workflow_dispatch:
   push:
     paths:
@@ -23,7 +23,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required for git pull
+          fetch-depth: 0
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
@@ -41,21 +41,24 @@ jobs:
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python sync_notation_to_json.py
 
-      - name: Stage and commit sync file before pulling
+      - name: Commit synced file (before pulling)
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
           git add mindmap_data_synced.json
-          git commit -m "temp commit before rebase" || echo "Nothing to commit"
-          git pull origin main --rebase
-      - name: Commit and push changes
+          git commit -m "temp: commit before rebase" || echo "Nothing to commit"
+
+      - name: Pull latest changes
+        run: git pull origin main --rebase
+
+      - name: Final push with updated data
         uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actions
           message: "chore: Auto-sync from Notion"
           add: mindmap_data_synced.json
-          fetch: true
           push: true
+          fetch: true
 
-      - name: List files for debugging
+      - name: List output
         run: ls -al
