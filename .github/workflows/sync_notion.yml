@@ -39,7 +39,7 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-        run: python sync_notion_to_json.py
+        run: python sync_notation_to_json.py
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
