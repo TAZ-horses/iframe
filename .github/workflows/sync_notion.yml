@@ -41,12 +41,13 @@ jobs:
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python sync_notation_to_json.py
 
-      - name: Pull latest changes to avoid non-fast-forward errors
+      - name: Stage and commit sync file before pulling
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git pull origin main --rebase
-
+    git config --global user.email "actions@github.com"
+    git config --global user.name "GitHub Actions"
+    git add mindmap_data_synced.json
+    git commit -m "temp commit before rebase" || echo "Nothing to commit"
+    git pull origin main --rebase
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v9
         with:
