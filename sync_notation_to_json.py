@@ -77,7 +77,7 @@ def main():
     
     try:
         notion = Client(auth=os.getenv("NOTION_TOKEN"))
-        database_id = os.getenv("NOTION_DATABASE_ID", "1d0cc957949480e180dcfeb4cd5eea19")
+        database_id = os.getenv("NOTION_DATABASE_ID")
         
         pages = fetch_notion_database(database_id, notion)
         structured_data = parse_notion_data(pages)
